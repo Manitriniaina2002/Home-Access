@@ -1,71 +1,698 @@
-{% extends 'base.html' %} {% block title %}Contrôle vocal{% endblock %} {% block
-content %}
-<h1>Contrôle vocal de la porte</h1>
-<div class="card">
-  <button id="start-btn">🎤 Parler</button>
-  <div id="result"></div>
-</div>
-{% endblock %} {% block scripts %}
-<script>
-  const startBtn = document.getElementById("start-btn");
-  const resultDiv = document.getElementById("result");
+{% extends 'base.html' %}
 
-  // Vérifier la compatibilité du navigateur
-  const SpeechRecognition =
-    window.SpeechRecognition || window.webkitSpeechRecognition;
-  if (!SpeechRecognition) {
-    alert("Votre navigateur ne supporte pas la reconnaissance vocale.");
-  } else {
-    const recognition = new SpeechRecognition();
-    recognition.lang = "fr-FR";
+{% block title %}Contrôle vocal - Smart Home{% endblock %}
+
+{% block extra_css %}
+<style>
+  .voice-container {
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  .voice-header {
+    text-align: center;
+    margin-bottom: 3rem;
+  }
+
+  .voice-title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #2c3e50;
+    margin-bottom: 0.5rem;
+  }
+
+  .voice-subtitle {
+    color: #64748b;
+    font-size: 1.1rem;
+  }
+
+  .voice-control-section {
+    background: white;
+    border-radius: 16px;
+    padding: 3rem 2rem;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+
+  .voice-button {
+    width: 120px;
+    height: 120px;
+    border: 3px solid #e5e7eb;
+    border-radius: 50%;
+    background: white;
+    cursor: pointer;
+    margin: 0 auto 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.5rem;
+    color: #6b7280;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .voice-button::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background: rgba(59, 130, 246, 0.1);
+    border-radius: 50%;
+    transition: all 0.3s ease;
+    transform: translate(-50%, -50%);
+  }
+
+  .voice-button:hover {
+    transform: translateY(-4px) scale(1.05);
+    border-color: #3b82f6;
+    color: #3b82f6;
+    box-shadow: 0 12px 32px rgba(59, 130, 246, 0.2);
+  }
+
+  .voice-button:hover::before {
+    width: 100%;
+    height: 100%;
+  }
+
+  .voice-button.listening {
+    border-color: #10b981;
+    color: #10b981;
+    background: linear-gradient(135deg, #f0fdf4, #dcfce7);
+    animation: pulse-listening 1.5s infinite;
+    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4);
+  }
+
+  @keyframes pulse-listening {
+    0% {
+      box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+    }
+    70% {
+      box-shadow: 0 0 0 20px rgba(16, 185, 129, 0);
+    }
+    100% {
+      box-shadow: 0 0 0 0 rgba(16, 185, 129, 0);
+    }
+  }
+
+  .voice-button.processing {
+    border-color: #f59e0b;
+    color: #f59e0b;
+    background: linear-gradient(135deg, #fefce8, #fef3c7);
+    animation: spin 1s linear infinite;
+  }
+
+  @keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+
+  .button-label {
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: #6b7280;
+    margin-bottom: 2rem;
+    transition: color 0.3s ease;
+  }
+
+  .voice-button.listening + .button-label {
+    color: #10b981;
+  }
+
+  .voice-status {
+    background: #f8fafc;
+    border: 2px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 1.5rem;
+    min-height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    color: #6b7280;
+    text-align: center;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .voice-status::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.8), transparent);
+    transition: left 0.5s ease;
+  }
+
+  .voice-status.loading::before {
+    left: 100%;
+  }
+
+  .voice-status.success {
+    background: linear-gradient(135deg, #f0fdf4, #dcfce7);
+    border-color: #bbf7d0;
+    color: #059669;
+  }
+
+  .voice-status.error {
+    background: linear-gradient(135deg, #fef2f2, #fee2e2);
+    border-color: #fecaca;
+    color: #dc2626;
+  }
+
+  .voice-status.listening {
+    background: linear-gradient(135deg, #eff6ff, #dbeafe);
+    border-color: #bfdbfe;
+    color: #2563eb;
+  }
+
+  .commands-section {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+  }
+
+  .commands-card {
+    background: white;
+    border-radius: 12px;
+    padding: 2rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  }
+
+  .commands-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #2c3e50;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .command-list {
+    list-style: none;
+    padding: 0;
+  }
+
+  .command-item {
+    padding: 0.75rem 1rem;
+    background: #f8fafc;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    margin-bottom: 0.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all 0.2s ease;
+  }
+
+  .command-item:hover {
+    background: #f1f5f9;
+    border-color: #3b82f6;
+    transform: translateX(4px);
+  }
+
+  .command-text {
+    font-weight: 500;
+    color: #374151;
+  }
+
+  .command-action {
+    font-size: 0.8rem;
+    color: #6b7280;
+    background: #e5e7eb;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+  }
+
+  .test-command-btn {
+    background: #3b82f6;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .test-command-btn:hover {
+    background: #2563eb;
+    transform: translateY(-1px);
+  }
+
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin: 2rem 0;
+  }
+
+  .stat-card {
+    background: white;
+    border-radius: 8px;
+    padding: 1.5rem;
+    text-align: center;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  }
+
+  .stat-number {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #3b82f6;
+    display: block;
+  }
+
+  .stat-label {
+    color: #6b7280;
+    font-size: 0.9rem;
+    margin-top: 0.5rem;
+  }
+
+  .activity-log {
+    background: white;
+    border-radius: 12px;
+    padding: 2rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    margin-top: 2rem;
+  }
+
+  .log-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+  }
+
+  .clear-log-btn {
+    background: #ef4444;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .clear-log-btn:hover {
+    background: #dc2626;
+  }
+
+  .log-list {
+    max-height: 300px;
+    overflow-y: auto;
+  }
+
+  .log-item {
+    padding: 1rem;
+    border-bottom: 1px solid #f1f5f9;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    animation: fadeIn 0.3s ease;
+  }
+
+  .log-item:last-child {
+    border-bottom: none;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .log-message {
+    color: #374151;
+  }
+
+  .log-time {
+    font-size: 0.8rem;
+    color: #6b7280;
+  }
+
+  .log-status {
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.7rem;
+    font-weight: 500;
+    margin-left: 0.5rem;
+  }
+
+  .log-status.success {
+    background: #dcfce7;
+    color: #166534;
+  }
+
+  .log-status.error {
+    background: #fef2f2;
+    color: #dc2626;
+  }
+
+  @media (max-width: 768px) {
+    .voice-container {
+      padding: 0 1rem;
+    }
+    
+    .voice-control-section {
+      padding: 2rem 1rem;
+    }
+    
+    .voice-button {
+      width: 100px;
+      height: 100px;
+      font-size: 2rem;
+    }
+    
+    .commands-section {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="voice-container">
+  <div class="voice-header">
+    <h1 class="voice-title">🎤 Contrôle Vocal Intelligent</h1>
+    <p class="voice-subtitle">Commandez vos appareils par la voix avec Django + MQTT</p>
+  </div>
+
+  <!-- Voice Control Section -->
+  <div class="voice-control-section">
+    <button class="voice-button" id="voice-btn">🎤</button>
+    <div class="button-label" id="button-label">Cliquez pour parler</div>
+    <div class="voice-status" id="voice-status">Prêt à écouter vos commandes</div>
+  </div>
+
+  <!-- Statistics -->
+  <div class="stats-grid">
+    <div class="stat-card">
+      <span class="stat-number" id="commands-count">0</span>
+      <div class="stat-label">Commandes aujourd'hui</div>
+    </div>
+    <div class="stat-card">
+      <span class="stat-number" id="success-rate">0%</span>
+      <div class="stat-label">Taux de réussite</div>
+    </div>
+    <div class="stat-card">
+      <span class="stat-number" id="mqtt-messages">0</span>
+      <div class="stat-label">Messages MQTT</div>
+    </div>
+  </div>
+
+  <!-- Commands Reference -->
+  <div class="commands-section">
+    <div class="commands-card">
+      <h3 class="commands-title">
+        🚪 Commandes de Porte
+      </h3>
+      <ul class="command-list">
+        <li class="command-item">
+          <span class="command-text">"Ouvre la porte"</span>
+          <div>
+            <span class="command-action">open</span>
+            <button class="test-command-btn" onclick="testCommand('ouvre la porte')">Tester</button>
+          </div>
+        </li>
+        <li class="command-item">
+          <span class="command-text">"Ferme la porte"</span>
+          <div>
+            <span class="command-action">close</span>
+            <button class="test-command-btn" onclick="testCommand('ferme la porte')">Tester</button>
+          </div>
+        </li>
+      </ul>
+    </div>
+
+    <div class="commands-card">
+      <h3 class="commands-title">
+        💡 Commandes d'Éclairage
+      </h3>
+      <ul class="command-list">
+        <li class="command-item">
+          <span class="command-text">"Allume la lumière"</span>
+          <div>
+            <span class="command-action">on</span>
+            <button class="test-command-btn" onclick="testCommand('allume la lumière')">Tester</button>
+          </div>
+        </li>
+        <li class="command-item">
+          <span class="command-text">"Éteins la lumière"</span>
+          <div>
+            <span class="command-action">off</span>
+            <button class="test-command-btn" onclick="testCommand('éteins la lumière')">Tester</button>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Activity Log -->
+  <div class="activity-log">
+    <div class="log-header">
+      <h3 class="commands-title">📋 Journal d'Activité</h3>
+      <button class="clear-log-btn" onclick="clearActivityLog()">Vider le journal</button>
+    </div>
+    <div class="log-list" id="activity-log">
+      <div class="log-item">
+        <span class="log-message">Système de reconnaissance vocale initialisé</span>
+        <span class="log-time" id="init-time"></span>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  let voiceStats = {
+    totalCommands: 0,
+    successfulCommands: 0,
+    mqttMessages: 0
+  };
+
+  const voiceButton = document.getElementById('voice-btn');
+  const buttonLabel = document.getElementById('button-label');
+  const voiceStatus = document.getElementById('voice-status');
+  const activityLog = document.getElementById('activity-log');
+
+  // Initialize speech recognition
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  let recognition = null;
+
+  if (SpeechRecognition) {
+    recognition = new SpeechRecognition();
+    recognition.lang = 'fr-FR';
     recognition.interimResults = false;
     recognition.maxAlternatives = 1;
-
-    startBtn.addEventListener("click", () => {
-      recognition.start();
-      resultDiv.textContent = "🎙️ J'écoute...";
-    });
-
-    recognition.addEventListener("result", (event) => {
-      const transcript = event.results[0][0].transcript;
-      resultDiv.textContent = `Vous avez dit: "${transcript}"`;
-
-      fetch("{% url 'send_command' %}", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "X-CSRFToken": getCookie("csrftoken"),
-        },
-        body: JSON.stringify({ phrase: transcript.toLowerCase() }),
-      })
-        .then((res) => res.json())
-        .then((data) => {
-          if (data.status === "ok") {
-            resultDiv.textContent = `✅ Action envoyée : ${data.action}`;
-          } else {
-            resultDiv.textContent = `❌ ${data.message}`;
-          }
-        })
-        .catch((err) => {
-          console.error(err);
-          resultDiv.textContent = "⚠️ Erreur de communication avec le serveur.";
-        });
-    });
+    recognition.continuous = false;
   }
 
-  function getCookie(name) {
-    let cookieValue = null;
-    if (document.cookie && document.cookie !== "") {
-      const cookies = document.cookie.split(";");
-      for (let i = 0; i < cookies.length; i++) {
-        const cookie = cookies[i].trim();
-        if (cookie.startsWith(name + "=")) {
-          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-          break;
-        }
-      }
+  // Update voice status
+  function updateVoiceStatus(message, type = '', loading = false) {
+    voiceStatus.className = `voice-status ${type} ${loading ? 'loading' : ''}`;
+    voiceStatus.textContent = message;
+  }
+
+  // Update button state
+  function updateButtonState(state) {
+    voiceButton.className = `voice-button ${state}`;
+    
+    switch(state) {
+      case 'listening':
+        buttonLabel.textContent = 'En écoute...';
+        voiceButton.innerHTML = '🎙️';
+        break;
+      case 'processing':
+        buttonLabel.textContent = 'Traitement...';
+        voiceButton.innerHTML = '⚡';
+        break;
+      default:
+        buttonLabel.textContent = 'Cliquez pour parler';
+        voiceButton.innerHTML = '🎤';
     }
-    return cookieValue;
   }
+
+  // Add activity log entry
+  function addActivityLog(message, status = 'info') {
+    const logItem = document.createElement('div');
+    logItem.className = 'log-item';
+    
+    const statusClass = status === 'success' ? 'success' : status === 'error' ? 'error' : '';
+    const statusBadge = statusClass ? `<span class="log-status ${statusClass}">${status.toUpperCase()}</span>` : '';
+    
+    logItem.innerHTML = `
+      <span class="log-message">${message}${statusBadge}</span>
+      <span class="log-time">${new Date().toLocaleTimeString('fr-FR')}</span>
+    `;
+    
+    // Insert after the init message
+    if (activityLog.children.length > 1) {
+      activityLog.insertBefore(logItem, activityLog.children[1]);
+    } else {
+      activityLog.appendChild(logItem);
+    }
+    
+    // Keep only last 20 entries
+    while (activityLog.children.length > 21) {
+      activityLog.removeChild(activityLog.lastChild);
+    }
+  }
+
+  // Update statistics
+  function updateStats() {
+    document.getElementById('commands-count').textContent = voiceStats.totalCommands;
+    document.getElementById('success-rate').textContent = 
+      voiceStats.totalCommands > 0 ? Math.round((voiceStats.successfulCommands / voiceStats.totalCommands) * 100) + '%' : '0%';
+    document.getElementById('mqtt-messages').textContent = voiceStats.mqttMessages;
+  }
+
+  // Voice recognition event handlers
+  if (recognition) {
+    voiceButton.addEventListener('click', () => {
+      if (voiceButton.classList.contains('listening')) {
+        recognition.stop();
+        return;
+      }
+      
+      recognition.start();
+      updateButtonState('listening');
+      updateVoiceStatus('J\'écoute... Parlez maintenant !', 'listening');
+      addActivityLog('Démarrage de l\'écoute vocale');
+    });
+
+    recognition.addEventListener('result', (event) => {
+      const transcript = event.results[0][0].transcript;
+      const confidence = event.results[0][0].confidence;
+      
+      updateButtonState('processing');
+      updateVoiceStatus(`Traitement de: "${transcript}"`, '', true);
+      
+      voiceStats.totalCommands++;
+      addActivityLog(`Commande reçue: "${transcript}" (confiance: ${Math.round(confidence * 100)}%)`);
+      
+      // Send to Django backend
+      sendVoiceCommand(transcript);
+    });
+
+    recognition.addEventListener('end', () => {
+      updateButtonState('');
+      if (!voiceStatus.classList.contains('success') && !voiceStatus.classList.contains('error')) {
+        updateVoiceStatus('Prêt à écouter vos commandes');
+      }
+    });
+
+    recognition.addEventListener('error', (event) => {
+      updateButtonState('');
+      let errorMessage = 'Erreur de reconnaissance vocale';
+      
+      switch(event.error) {
+        case 'no-speech':
+          errorMessage = 'Aucune parole détectée. Réessayez.';
+          break;
+        case 'network':
+          errorMessage = 'Erreur réseau. Vérifiez votre connexion.';
+          break;
+        case 'not-allowed':
+          errorMessage = 'Microphone non autorisé. Autorisez l\'accès.';
+          break;
+        case 'service-not-allowed':
+          errorMessage = 'Service de reconnaissance non disponible.';
+          break;
+      }
+      
+      updateVoiceStatus(errorMessage, 'error');
+      addActivityLog(`Erreur: ${errorMessage}`, 'error');
+    });
+
+    recognition.addEventListener('start', () => {
+      addActivityLog('Microphone activé');
+    });
+  } else {
+    // Speech recognition not supported
+    voiceButton.disabled = true;
+    updateVoiceStatus('Reconnaissance vocale non supportée par ce navigateur', 'error');
+    addActivityLog('Reconnaissance vocale non disponible', 'error');
+  }
+
+  // Send voice command to Django
+  function sendVoiceCommand(command) {
+    fetch('{% url "send_command" %}', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRFToken': getCookie('csrftoken')
+      },
+      body: JSON.stringify({ phrase: command.toLowerCase() })
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.status === 'ok') {
+        voiceStats.successfulCommands++;
+        voiceStats.mqttMessages++;
+        
+        updateVoiceStatus(`✅ Commande exécutée: ${data.action}`, 'success');
+        addActivityLog(`MQTT publié: action "${data.action}" pour "${command}"`, 'success');
+      } else {
+        updateVoiceStatus(`❌ ${data.message}`, 'error');
+        addActivityLog(`Échec: ${data.message} pour "${command}"`, 'error');
+      }
+      
+      updateStats();
+    })
+    .catch(error => {
+      console.error('Voice command error:', error);
+      updateVoiceStatus('Erreur de communication avec le serveur', 'error');
+      addActivityLog(`Erreur serveur pour "${command}"`, 'error');
+    });
+  }
+
+  // Test command function
+  function testCommand(command) {
+    addActivityLog(`Test manuel de la commande: "${command}"`);
+    sendVoiceCommand(command);
+  }
+
+  // Clear activity log
+  function clearActivityLog() {
+    // Keep only the init message
+    const initMessage = activityLog.children[0];
+    activityLog.innerHTML = '';
+    activityLog.appendChild(initMessage);
+    
+    addActivityLog('Journal d\'activité vidé');
+    showMessage('Journal d\'activité vidé', 'success');
+  }
+
+  // Initialize page
+  function initVoicePage() {
+    // Set init time
+    document.getElementById('init-time').textContent = new Date().toLocaleTimeString('fr-FR');
+    
+    // Update initial stats
+    updateStats();
+    
+    // Add welcome message
+    if (recognition) {
+      addActivityLog('Système prêt - Cliquez sur le microphone pour commencer');
+    }
+  }
+
+  // Start when page loads
+  document.addEventListener('DOMContentLoaded', initVoicePage);
 </script>
 {% endblock %}
