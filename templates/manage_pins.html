@@ -1,0 +1,190 @@
+{% extends 'base.html' %} 
+{% block title %}Gestion des PINs{% endblock %} 
+{% block content %}
+<div class="card" style="max-width: 900px; margin: 2rem auto; padding: 1.5rem">
+  <h2 class="mb-2">Gestion des PINs</h2>
+  {% if errors %}
+  <div style="color: #dc2626; margin-bottom: 0.5rem">
+    {% for e in errors %}
+    <div>{{ e }}</div>
+    {% endfor %}
+  </div>
+  {% endif %}
+  <form id="pin-form" method="post">
+    {% csrf_token %}
+    <div
+      class="form-group"
+      style="
+        display: flex;
+        gap: 0.75rem;
+        align-items: center;
+        margin-bottom: 1rem;
+      "
+    >
+      <input
+        name="name"
+        id="pin-name"
+        placeholder="Nom du PIN (optionnel)"
+        value="{{ old.name|default:'' }}"
+        class="form-input"
+        style="min-width: 180px"
+      />
+      <input
+        name="pin"
+        id="pin-raw"
+        placeholder="PIN (4+ chiffres)"
+        value=""
+        class="form-input"
+        style="min-width: 180px"
+      />
+      <button
+        id="pin-create"
+        class="btn btn-primary"
+        title="Créer"
+        aria-label="Créer un PIN"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="18"
+          height="18"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          style="vertical-align: middle"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M12 4v16m8-8H4"
+          />
+        </svg>
+      </button>
+    </div>
+  </form>
+
+  <div
+    id="manage-pins"
+    data-toggle-url="{% url 'toggle_pin' 0 %}"
+    data-delete-url="{% url 'delete_pin' 0 %}"
+    data-update-url="{% url 'update_pin' 0 %}"
+  >
+    <ul style="list-style: none; padding: 0; margin: 0">
+      {% for p in pins %}
+      <li
+        style="
+          display: flex;
+          justify-content: space-between;
+          padding: 0.6rem 0;
+          border-bottom: 1px solid #f1f5f9;
+          align-items: center;
+        "
+      >
+        <div>
+          <strong>{{ p.name }}</strong>
+          <div style="font-size: 0.85rem; color: #6b7280">
+            Créé : {{ p.created_at }} — Actif : {{ p.active }}
+          </div>
+        </div>
+        <div style="display: flex; gap: 0.5rem; align-items: center">
+          <button
+            class="pin-toggle btn"
+            data-id="{{ p.id }}"
+            title="Basculer"
+            aria-label="Basculer"
+            style="
+              background: #fff;
+              border: 1px solid #e5e7eb;
+              padding: 6px;
+              border-radius: 6px;
+            "
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="18"
+              height="18"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              style="vertical-align: middle"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M3 10h4l3-3 4 4 5-5v10"
+              />
+            </svg>
+          </button>
+          <button
+            class="pin-delete btn"
+            data-id="{{ p.id }}"
+            title="Supprimer"
+            aria-label="Supprimer"
+            style="
+              color: #ef4444;
+              border: 1px solid #ef4444;
+              background: #fff;
+              padding: 6px;
+              border-radius: 6px;
+            "
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="18"
+              height="18"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              style="vertical-align: middle"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6M1 7h22"
+              />
+            </svg>
+          </button>
+          <button
+            class="pin-edit btn"
+            data-id="{{ p.id }}"
+            title="Modifier"
+            aria-label="Modifier"
+            style="
+              background: #fff;
+              border: 1px solid #e5e7eb;
+              padding: 6px;
+              border-radius: 6px;
+            "
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="18"
+              height="18"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              style="vertical-align: middle"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M15.232 5.232l3.536 3.536M4 20h4l10-10-4-4L4 16v4z"
+              />
+            </svg>
+          </button>
+        </div>
+      </li>
+      {% empty %}
+      <li>Aucun PIN configuré</li>
+      {% endfor %}
+    </ul>
+  </div>
+
+  {% load static %} {% block scripts %}
+  <script src="{% static 'js/manage_pins.js' %}"></script>
+  {% endblock %}
+</div>
+{% endblock %}

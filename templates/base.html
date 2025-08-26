@@ -182,6 +182,8 @@
       }
     }
   </style>
+  <!-- Tailwind CSS CDN for utility classes and quicker styling -->
+  <script src="https://cdn.tailwindcss.com"></script>
   {% block extra_css %}{% endblock %}
 </head>
 <body>
@@ -191,11 +193,15 @@
       <div class="nav-brand">Portail d'accès</div>
       <div class="nav-links">
         <a href="{% url 'dashboard' %}" {% if request.resolver_match.url_name == 'dashboard' %}class="active"{% endif %}>
-          Dashboard
+          Tableau de bord
         </a>
         <a href="{% url 'voice' %}" {% if request.resolver_match.url_name == 'voice' %}class="active"{% endif %}>
-          Voix
+          Commande
         </a>
+  {% if user.is_staff %}
+  <a href="{% url 'manage_voice' %}" {% if request.resolver_match.url_name == 'manage_voice' %}class="active"{% endif %}>Gestion Voix</a>
+  <a href="{% url 'manage_pins' %}" {% if request.resolver_match.url_name == 'manage_pins' %}class="active"{% endif %}>Gestion PINs</a>
+  {% endif %}
         <span style="color: #475569;">Bienvenue, {{ user.username }}</span>
         <a href="{% url 'logout' %}" class="btn btn-danger" style="padding: 0.5rem 1rem;">
           Déconnexion
@@ -263,6 +269,100 @@
         alertDiv.remove();
       }, 4000);
     }
+  </script>
+  <!-- Global modal (hidden by default) -->
+  <div id="global-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+    <div class="bg-white rounded-lg shadow-lg w-full max-w-lg p-6" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+      <div id="modal-body">
+        <!-- dynamic content injected here -->
+      </div>
+      <div id="modal-actions" class="mt-4 flex justify-end gap-2">
+  <button id="modal-cancel" class="btn" type="button">Annuler</button>
+  <button id="modal-confirm" class="btn btn-primary" type="button">Confirmer</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Modal helpers: openModal(options), closeModal(), confirmModal(message, onConfirm), showFormModal(opts)
+    (function(){
+      const modal = document.getElementById('global-modal');
+      const body = document.getElementById('modal-body');
+      const actions = document.getElementById('modal-actions');
+      const btnCancel = document.getElementById('modal-cancel');
+      const btnConfirm = document.getElementById('modal-confirm');
+      let currentConfirm = null;
+
+  function openModal({ html = '', showConfirm = true, confirmText = 'Confirmer', cancelText = 'Annuler', onConfirm = null } = {}){
+        if (!modal) return;
+        body.innerHTML = html;
+        btnConfirm.textContent = confirmText;
+        btnCancel.textContent = cancelText;
+        btnConfirm.style.display = showConfirm ? '' : 'none';
+        currentConfirm = onConfirm;
+        modal.classList.remove('hidden');
+        // small focus trap
+        const focusable = modal.querySelector('button, input, textarea, select');
+        if (focusable) focusable.focus();
+      }
+
+      function closeModal(){
+        if (!modal) return;
+        modal.classList.add('hidden');
+        body.innerHTML = '';
+        currentConfirm = null;
+      }
+
+      btnCancel && btnCancel.addEventListener('click', (e) => { e.preventDefault(); closeModal(); });
+      btnConfirm && btnConfirm.addEventListener('click', async (e) => {
+        e.preventDefault();
+        if (typeof currentConfirm === 'function') {
+          try {
+            await currentConfirm();
+          } catch (err) {
+            console.error(err);
+          }
+        }
+        closeModal();
+      });
+
+      // convenience wrappers
+      window.confirmModal = function(message, onConfirm){
+        const html = `<h3 id="modal-title" class="text-lg font-semibold mb-2">Confirmer</h3><div class="text-sm text-gray-700">${message}</div>`;
+        openModal({ html, showConfirm: true, confirmText: 'Oui', cancelText: 'Non', onConfirm });
+      }
+
+  window.showFormModal = function({ title = 'Formulaire', fields = [], submitText = 'Enregistrer', onSubmit = null } = {}){
+        let fieldsHtml = '';
+        fields.forEach(f => {
+          const val = f.value !== undefined && f.value !== null ? String(f.value).replace(/</g, '&lt;') : '';
+          if (f.type === 'select') {
+            // expect f.options as array of {value,label} or strings
+            let optionsHtml = '';
+            (f.options || []).forEach(opt => {
+              if (typeof opt === 'string') {
+                const selected = opt === val ? 'selected' : '';
+                optionsHtml += `<option value="${opt}" ${selected}>${opt}</option>`;
+              } else {
+                const ov = String(opt.value).replace(/</g, '&lt;');
+                const ol = String(opt.label || opt.value).replace(/</g, '&lt;');
+                const selected = String(opt.value) === String(val) ? 'selected' : '';
+                optionsHtml += `<option value="${ov}" ${selected}>${ol}</option>`;
+              }
+            });
+            fieldsHtml += `<div class="mb-3"><label class="block font-medium mb-1">${f.label}</label><select id="modal-field-${f.name}" class="form-input w-full">${optionsHtml}</select></div>`;
+          } else {
+            fieldsHtml += `<div class="mb-3"><label class="block font-medium mb-1">${f.label}</label><input id="modal-field-${f.name}" class="form-input w-full" type="${f.type||'text'}" value="${val}" /></div>`;
+          }
+        });
+        const html = `<h3 class="text-lg font-semibold mb-2">${title}</h3><div>${fieldsHtml}</div>`;
+  openModal({ html, showConfirm: true, confirmText: submitText, cancelText: 'Annuler', onConfirm: async () => {
+          const data = {};
+          fields.forEach(f => { const el = document.getElementById('modal-field-'+f.name); data[f.name] = el ? el.value : ''; });
+          if (typeof onSubmit === 'function') await onSubmit(data);
+        }});
+      }
+    })();
   </script>
   
   {% block scripts %}{% endblock %}

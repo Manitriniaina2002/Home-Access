@@ -389,6 +389,7 @@
     }
   }
 </style>
+
 {% endblock %} 
 {% block content %}
 
@@ -405,6 +406,75 @@
     <div class="voice-status" id="voice-status">
       Prêt à écouter vos commandes
     </div>
+  </div>
+
+  <!-- PIN unlock -->
+  <div class="voice-control-section" style="margin-top: 0.5rem">
+    <div
+      style="
+        display: flex;
+        gap: 0.5rem;
+        justify-content: center;
+        align-items: center;
+        flex-wrap: wrap;
+      "
+    >
+      <div
+        style="
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 0.5rem;
+        "
+      >
+        <input
+          id="pin-input"
+          type="password"
+          inputmode="numeric"
+          pattern="[0-9]*"
+          placeholder="Entrer le code PIN"
+          style="
+            padding: 0.6rem;
+            border-radius: 8px;
+            border: 1px solid #e5e7eb;
+            min-width: 160px;
+            font-size: 1.1rem;
+            text-align: center;
+            letter-spacing: 0.25rem;
+          "
+        />
+        <div
+          id="keypad"
+          style="
+            display: grid;
+            grid-template-columns: repeat(3, 64px);
+            gap: 8px;
+          "
+        >
+          <button class="kp">1</button><button class="kp">2</button
+          ><button class="kp">3</button> <button class="kp">4</button
+          ><button class="kp">5</button><button class="kp">6</button>
+          <button class="kp">7</button><button class="kp">8</button
+          ><button class="kp">9</button>
+          <button id="kp-clear" style="grid-column: span 2">Effacer</button
+          ><button class="kp">0</button>
+        </div>
+        <div style="display: flex; gap: 0.5rem">
+          <button id="pin-btn" class="test-command-btn">Déverrouiller</button>
+          <button
+            id="pin-cancel"
+            class="test-command-btn"
+            style="background: #f3f4f6; color: #374151"
+          >
+            Annuler
+          </button>
+        </div>
+      </div>
+    </div>
+    <div
+      id="pin-feedback"
+      style="margin-top: 0.75rem; text-align: center; color: #6b7280"
+    ></div>
   </div>
 
   <!-- Statistics -->
@@ -506,7 +576,6 @@
 </div>
 
 {% endblock %} 
-
 {% block scripts %}
 <script>
   let voiceStats = {
@@ -719,6 +788,76 @@
     addActivityLog(`Test manuel de la commande: "${command}"`);
     sendVoiceCommand(command);
   }
+
+  // PIN unlock handler
+  document.getElementById("pin-btn").addEventListener("click", function () {
+    const pin = document.getElementById("pin-input").value.trim();
+    const fb = document.getElementById("pin-feedback");
+    fb.textContent = "";
+    if (!pin) {
+      fb.textContent = "Veuillez entrer un code PIN";
+      fb.style.color = "#dc2626";
+      return;
+    }
+
+    if (!/^[0-9]{4,}$/.test(pin)) {
+      fb.textContent = "Le PIN doit contenir au moins 4 chiffres";
+      fb.style.color = "#dc2626";
+      return;
+    }
+
+    fetch('{% url "unlock_with_pin" %}', {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRFToken": getCookie("csrftoken"),
+      },
+      body: JSON.stringify({ pin }),
+    })
+      .then((r) => r.json())
+      .then((data) => {
+        if (data.status === "ok") {
+          fb.textContent = "Porte déverrouillée";
+          fb.style.color = "#059669";
+          addActivityLog("Porte déverrouillée via PIN", "success");
+        } else {
+          fb.textContent = data.message || "Échec du PIN";
+          fb.style.color = "#dc2626";
+          addActivityLog("Échec PIN: " + (data.message || ""), "error");
+        }
+      })
+      .catch((err) => {
+        fb.textContent = "Erreur serveur";
+        fb.style.color = "#dc2626";
+        addActivityLog("Erreur PIN: " + err, "error");
+      });
+  });
+
+  // Keypad wiring
+  document.querySelectorAll("#keypad .kp").forEach((b) => {
+    b.addEventListener("click", (e) => {
+      const input = document.getElementById("pin-input");
+      input.value = (input.value + b.textContent).slice(0, 8); // limit length
+    });
+  });
+  document.getElementById("kp-clear").addEventListener("click", () => {
+    const input = document.getElementById("pin-input");
+    input.value = "";
+  });
+  document.getElementById("pin-cancel").addEventListener("click", () => {
+    document.getElementById("pin-input").value = "";
+    document.getElementById("pin-feedback").textContent = "";
+  });
+
+  // allow Enter key on PIN input
+  document
+    .getElementById("pin-input")
+    .addEventListener("keydown", function (e) {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        document.getElementById("pin-btn").click();
+      }
+    });
 
   // Clear activity log
   function clearActivityLog() {

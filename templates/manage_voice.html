@@ -1,0 +1,68 @@
+{% extends 'base.html' %} 
+{% block title %}Gestion des commandes vocales{% endblock %}
+{% block content %}
+<div class="card" style="max-width:900px;margin:2rem auto;padding:1.5rem;">
+  <h2 class="mb-2">Gestion des commandes vocales</h2>
+  {% if errors %}
+  <div style="color: #dc2626; margin-bottom: 0.5rem">
+    {% for e in errors %}
+    <div>{{ e }}</div>
+    {% endfor %}
+  </div>
+  {% endif %}
+  <form id="voice-form" method="post">
+    {% csrf_token %}
+    <div class="form-group" style="display:flex;gap:0.75rem;align-items:center;margin-bottom:1rem;">
+      <input name="phrase" id="phrase" placeholder="Phrase (ex: ouvre la porte)" value="{{ old.phrase|default:'' }}" class="form-input" style="flex:1;" />
+      <select name="action" id="action" class="form-input" style="width:160px;">
+        <option value="open" {% if old.action == 'open' %}selected{% endif %}>ouvrir</option>
+        <option value="close" {% if old.action == 'close' %}selected{% endif %}>fermer</option>
+        <option value="toggle" {% if old.action == 'toggle' %}selected{% endif %}>basculer</option>
+      </select>
+      <button class="btn btn-primary" title="Ajouter / Mettre à jour" aria-label="Ajouter ou mettre à jour">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" style="vertical-align:middle;">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+        </svg>
+      </button>
+    </div>
+  </form>
+
+  <div id="manage-voice" data-update-url="{% url 'update_voice' 0 %}" data-delete-url="{% url 'delete_voice' 0 %}">
+    <table class="" style="width:100%;border-collapse:collapse;">
+      <thead>
+        <tr style="text-align:left;border-bottom:1px solid #eee">
+          <th style="padding:0.6rem 0">Phrase</th>
+          <th style="padding:0.6rem 0">Action</th>
+          <th style="padding:0.6rem 0;width:180px">&nbsp;</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for c in commands %}
+        <tr style="border-bottom:1px solid #fafafa">
+          <td style="padding:0.75rem 0">{{ c.phrase }}</td>
+          <td style="padding:0.75rem 0">{{ c.action }}</td>
+          <td style="padding:0.75rem 0;width:180px">
+            <button class="cmd-edit btn" data-id="{{ c.id }}" title="Modifier" aria-label="Modifier la commande" style="margin-right:8px;">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" style="vertical-align:middle;">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536M4 20h4l10-10-4-4L4 16v4z" />
+              </svg>
+            </button>
+            <button class="cmd-delete btn" data-id="{{ c.id }}" title="Supprimer" aria-label="Supprimer la commande" style="color:#ef4444;border:1px solid #ef4444;background:#fff;padding:6px;border-radius:6px;">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" style="vertical-align:middle;">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6M1 7h22" />
+              </svg>
+            </button>
+          </td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="3">Aucune commande</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% load static %} {% block scripts %}
+  <script src="{% static 'js/manage_voice.js' %}"></script>
+  {% endblock %} {% endblock %}
+</div>
