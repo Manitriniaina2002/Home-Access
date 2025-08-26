@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Smart Home Control</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      min-height: 100vh;
+      color: #2c3e50;
+    }
+
+    /* Login Interface */
+    .login-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .login-card {
+      background: white;
+      border-radius: 16px;
+      padding: 3rem 2.5rem;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+      max-width: 420px;
+      width: 100%;
+      border: 1px solid rgba(255, 255, 255, 0.8);
+      text-align: center;
+    }
+
+    .login-header {
+      margin-bottom: 2rem;
+    }
+
+    .logo {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .login-title {
+      font-size: 1.75rem;
+      font-weight: 600;
+      color: #2c3e50;
+      margin-bottom: 0.5rem;
+    }
+
+    .login-subtitle {
+      color: #64748b;
+      font-size: 0.95rem;
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+      text-align: left;
+    }
+
+    .form-label {
+      display: block;
+      font-weight: 500;
+      color: #374151;
+      margin-bottom: 0.5rem;
+      font-size: 0.9rem;
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      border: 2px solid #e5e7eb;
+      border-radius: 8px;
+      font-size: 1rem;
+      transition: all 0.2s ease;
+      background: #f9fafb;
+    }
+
+    .form-input:focus {
+      outline: none;
+      border-color: #3b82f6;
+      background: white;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+
+    .login-btn {
+      width: 100%;
+      padding: 0.875rem;
+      background: #3b82f6;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      margin-top: 1rem;
+    }
+
+    .login-btn:hover {
+      background: #2563eb;
+      transform: translateY(-1px);
+    }
+
+    /* Home Interface */
+    .home-container {
+      display: none;
+      padding: 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .header {
+      background: white;
+      border-radius: 12px;
+      padding: 1.5rem 2rem;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+      margin-bottom: 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .header-title {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: #2c3e50;
+    }
+
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .logout-btn {
+      padding: 0.5rem 1rem;
+      background: #ef4444;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.875rem;
+      transition: background 0.2s ease;
+    }
+
+    .logout-btn:hover {
+      background: #dc2626;
+    }
+
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+      margin-bottom: 2rem;
+    }
+
+    .voice-control-card {
+      background: white;
+      border-radius: 12px;
+      padding: 2rem;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    }
+
+    .card-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: #2c3e50;
+      margin-bottom: 1rem;
+    }
+
+    .voice-button {
+      width: 80px;
+      height: 80px;
+      border: 2px solid #e5e7eb;
+      border-radius: 50%;
+      background: white;
+      cursor: pointer;
+      margin: 0 auto 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.8rem;
+      color: #6b7280;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      transition: all 0.25s ease;
+    }
+
+    .voice-button:hover {
+      transform: translateY(-2px);
+      border-color: #3b82f6;
+      color: #3b82f6;
+    }
+
+    .voice-button.listening {
+      border-color: #10b981;
+      color: #10b981;
+      background: #f0fdf4;
+      animation: listening 2s infinite ease-in-out;
+    }
+
+    .voice-status {
+      background: #f8fafc;
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+      padding: 1rem;
+      min-height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.9rem;
+      color: #6b7280;
+      text-align: center;
+    }
+
+    .voice-status.success {
+      background: #f0fdf4;
+      border-color: #bbf7d0;
+      color: #059669;
+    }
+
+    .voice-status.error {
+      background: #fef2f2;
+      border-color: #fecaca;
+      color: #dc2626;
+    }
+
+    .voice-status.listening {
+      background: #eff6ff;
+      border-color: #bfdbfe;
+      color: #2563eb;
+    }
+
+    .devices-card {
+      background: white;
+      border-radius: 12px;
+      padding: 2rem;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    }
+
+    .device-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .device-item {
+      display: flex;
+      justify-content: between;
+      align-items: center;
+      padding: 1rem;
+      background: #f8fafc;
+      border-radius: 8px;
+      border: 1px solid #e5e7eb;
+    }
+
+    .device-info {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      flex: 1;
+    }
+
+    .device-icon {
+      font-size: 1.5rem;
+      width: 40px;
+      text-align: center;
+    }
+
+    .device-details h3 {
+      font-size: 1rem;
+      font-weight: 500;
+      color: #374151;
+      margin-bottom: 0.25rem;
+    }
+
+    .device-details p {
+      font-size: 0.8rem;
+      color: #6b7280;
+    }
+
+    .device-toggle {
+      width: 50px;
+      height: 26px;
+      background: #d1d5db;
+      border-radius: 13px;
+      position: relative;
+      cursor: pointer;
+      transition: background 0.2s ease;
+    }
+
+    .device-toggle.active {
+      background: #10b981;
+    }
+
+    .device-toggle::after {
+      content: '';
+      position: absolute;
+      width: 22px;
+      height: 22px;
+      background: white;
+      border-radius: 50%;
+      top: 2px;
+      left: 2px;
+      transition: transform 0.2s ease;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    .device-toggle.active::after {
+      transform: translateX(24px);
+    }
+
+    .activity-log {
+      background: white;
+      border-radius: 12px;
+      padding: 2rem;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+      margin-top: 2rem;
+    }
+
+    .log-item {
+      padding: 0.75rem 0;
+      border-bottom: 1px solid #f1f5f9;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .log-item:last-child {
+      border-bottom: none;
+    }
+
+    .log-time {
+      font-size: 0.8rem;
+      color: #6b7280;
+    }
+
+    @keyframes listening {
+      0%, 100% {
+        box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
+      }
+      50% {
+        box-shadow: 0 8px 24px rgba(16, 185, 129, 0.4);
+      }
+    }
+
+    @media (max-width: 768px) {
+      .dashboard-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .header {
+        flex-direction: column;
+        gap: 1rem;
+        text-align: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Login Interface -->
+  <div id="login-screen" class="login-container">
+    <div class="login-card">
+      <div class="login-header">
+        <div class="logo">🏠</div>
+        <h1 class="login-title">Smart Home Control</h1>
+        <p class="login-subtitle">Contrôlez votre maison avec votre voix</p>
+      </div>
+      
+      <form id="login-form">
+        <div class="form-group">
+          <label class="form-label" for="username">Nom d'utilisateur</label>
+          <input type="text" id="username" class="form-input" placeholder="Entrez votre nom d'utilisateur" required>
+        </div>
+        
+        <div class="form-group">
+          <label class="form-label" for="password">Mot de passe</label>
+          <input type="password" id="password" class="form-input" placeholder="Entrez votre mot de passe" required>
+        </div>
+        
+        <button type="submit" class="login-btn">Se connecter</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Home Dashboard -->
+  <div id="home-screen" class="home-container">
+    <header class="header">
+      <h1 class="header-title">Tableau de Bord</h1>
+      <div class="user-info">
+        <span id="welcome-user">Bienvenue, Utilisateur</span>
+        <button class="logout-btn" onclick="logout()">Déconnexion</button>
+      </div>
+    </header>
+
+    <div class="dashboard-grid">
+      <!-- Voice Control Card -->
+      <div class="voice-control-card">
+        <h2 class="card-title">Contrôle Vocal</h2>
+        <div style="text-align: center;">
+          <button class="voice-button" id="start-btn">🎤</button>
+          <div class="voice-status" id="voice-result">Cliquez pour activer le contrôle vocal</div>
+        </div>
+      </div>
+
+      <!-- Connected Devices -->
+      <div class="devices-card">
+        <h2 class="card-title">Appareils Connectés</h2>
+        <div class="device-list">
+          <div class="device-item">
+            <div class="device-info">
+              <div class="device-icon">🚪</div>
+              <div class="device-details">
+                <h3>Porte d'entrée</h3>
+                <p>Contrôle d'accès principal</p>
+              </div>
+            </div>
+            <div class="device-toggle" id="door-toggle" onclick="toggleDevice('door')"></div>
+          </div>
+          
+          <div class="device-item">
+            <div class="device-info">
+              <div class="device-icon">💡</div>
+              <div class="device-details">
+                <h3>Éclairage salon</h3>
+                <p>Lumières LED intelligentes</p>
+              </div>
+            </div>
+            <div class="device-toggle active" id="lights-toggle" onclick="toggleDevice('lights')"></div>
+          </div>
+          
+          <div class="device-item">
+            <div class="device-info">
+              <div class="device-icon">🌡️</div>
+              <div class="device-details">
+                <h3>Thermostat</h3>
+                <p>Contrôle de température</p>
+              </div>
+            </div>
+            <div class="device-toggle active" id="thermostat-toggle" onclick="toggleDevice('thermostat')"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Activity Log -->
+    <div class="activity-log">
+      <h2 class="card-title">Journal d'Activité</h2>
+      <div id="activity-list">
+        <div class="log-item">
+          <span>Système initialisé</span>
+          <span class="log-time" id="init-time"></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let currentUser = '';
+    let devices = {
+      door: false,
+      lights: true,
+      thermostat: true
+    };
+
+    // Login functionality
+    document.getElementById('login-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const username = document.getElementById('username').value;
+      const password = document.getElementById('password').value;
+      
+      // Simple validation (in real app, use proper authentication)
+      if (username && password) {
+        currentUser = username;
+        document.getElementById('welcome-user').textContent = `Bienvenue, ${username}`;
+        document.getElementById('login-screen').style.display = 'none';
+        document.getElementById('home-screen').style.display = 'block';
+        
+        // Initialize timestamp
+        document.getElementById('init-time').textContent = new Date().toLocaleTimeString();
+        
+        addActivityLog('Connexion utilisateur réussie');
+      } else {
+        alert('Veuillez remplir tous les champs');
+      }
+    });
+
+    function logout() {
+      document.getElementById('login-screen').style.display = 'flex';
+      document.getElementById('home-screen').style.display = 'none';
+      document.getElementById('username').value = '';
+      document.getElementById('password').value = '';
+      currentUser = '';
+    }
+
+    function toggleDevice(deviceName) {
+      devices[deviceName] = !devices[deviceName];
+      const toggle = document.getElementById(deviceName + '-toggle');
+      
+      if (devices[deviceName]) {
+        toggle.classList.add('active');
+        addActivityLog(`${getDeviceName(deviceName)} activé`);
+      } else {
+        toggle.classList.remove('active');
+        addActivityLog(`${getDeviceName(deviceName)} désactivé`);
+      }
+    }
+
+    function getDeviceName(deviceName) {
+      const names = {
+        door: 'Porte d\'entrée',
+        lights: 'Éclairage salon',
+        thermostat: 'Thermostat'
+      };
+      return names[deviceName] || deviceName;
+    }
+
+    function addActivityLog(action) {
+      const activityList = document.getElementById('activity-list');
+      const logItem = document.createElement('div');
+      logItem.className = 'log-item';
+      logItem.innerHTML = `
+        <span>${action}</span>
+        <span class="log-time">${new Date().toLocaleTimeString()}</span>
+      `;
+      activityList.insertBefore(logItem, activityList.firstChild.nextSibling);
+    }
+
+    // Voice Control functionality
+    const startBtn = document.getElementById("start-btn");
+    const resultDiv = document.getElementById("voice-result");
+
+    function updateVoiceResult(message, type = '') {
+      resultDiv.className = `voice-status ${type}`;
+      resultDiv.textContent = message;
+    }
+
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SpeechRecognition) {
+      updateVoiceResult("Reconnaissance vocale non supportée", 'error');
+    } else {
+      const recognition = new SpeechRecognition();
+      recognition.lang = "fr-FR";
+      recognition.interimResults = false;
+      recognition.maxAlternatives = 1;
+
+      startBtn.addEventListener("click", () => {
+        recognition.start();
+        startBtn.classList.add('listening');
+        updateVoiceResult("Écoute en cours...", 'listening');
+      });
+
+      recognition.addEventListener("result", (event) => {
+        const transcript = event.results[0][0].transcript.toLowerCase();
+        startBtn.classList.remove('listening');
+        updateVoiceResult(`Commande: "${transcript}"`);
+        
+        // Process voice commands
+        processVoiceCommand(transcript);
+        addActivityLog(`Commande vocale: "${transcript}"`);
+      });
+
+      recognition.addEventListener("end", () => {
+        startBtn.classList.remove('listening');
+      });
+
+      recognition.addEventListener("error", () => {
+        startBtn.classList.remove('listening');
+        updateVoiceResult("Erreur de reconnaissance vocale", 'error');
+      });
+    }
+
+    function processVoiceCommand(command) {
+      // Simple command processing (extend as needed)
+      if (command.includes('ouvre') || command.includes('ouvrir')) {
+        if (command.includes('porte')) {
+          devices.door = true;
+          document.getElementById('door-toggle').classList.add('active');
+          updateVoiceResult("Porte ouverte", 'success');
+          addActivityLog('Porte ouverte par commande vocale');
+        }
+      } else if (command.includes('ferme') || command.includes('fermer')) {
+        if (command.includes('porte')) {
+          devices.door = false;
+          document.getElementById('door-toggle').classList.remove('active');
+          updateVoiceResult("Porte fermée", 'success');
+          addActivityLog('Porte fermée par commande vocale');
+        }
+      } else if (command.includes('allume') || command.includes('éclaire')) {
+        devices.lights = true;
+        document.getElementById('lights-toggle').classList.add('active');
+        updateVoiceResult("Éclairage allumé", 'success');
+        addActivityLog('Éclairage allumé par commande vocale');
+      } else if (command.includes('éteins') || command.includes('éteindre')) {
+        devices.lights = false;
+        document.getElementById('lights-toggle').classList.remove('active');
+        updateVoiceResult("Éclairage éteint", 'success');
+        addActivityLog('Éclairage éteint par commande vocale');
+      } else {
+        updateVoiceResult("Commande non reconnue", 'error');
+      }
+    }
+  </script>
+</body>
+</html>
