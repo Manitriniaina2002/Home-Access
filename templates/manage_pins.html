@@ -83,7 +83,8 @@
         <div>
           <strong>{{ p.name }}</strong>
           <div style="font-size: 0.85rem; color: #6b7280">
-            Créé : {{ p.created_at }} — Actif : {{ p.active }}
+            Créé : {{ p.created_at }} — Actif : {% if p.active %}Oui{% else
+            %}Non{% endif %}
           </div>
         </div>
         <div style="display: flex; gap: 0.5rem; align-items: center">

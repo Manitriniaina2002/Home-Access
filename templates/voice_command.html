@@ -390,8 +390,7 @@
   }
 </style>
 
-{% endblock %} 
-{% block content %}
+{% endblock %} {% block content %}
 
 <div class="voice-container">
   <div class="voice-header">
@@ -501,7 +500,7 @@
         <li class="command-item">
           <span class="command-text">"Ouvre la porte"</span>
           <div>
-            <span class="command-action">open</span>
+            <span class="command-action">ouvrir</span>
             <button
               class="test-command-btn"
               onclick="testCommand('ouvre la porte')"
@@ -513,7 +512,7 @@
         <li class="command-item">
           <span class="command-text">"Ferme la porte"</span>
           <div>
-            <span class="command-action">close</span>
+            <span class="command-action">fermer</span>
             <button
               class="test-command-btn"
               onclick="testCommand('ferme la porte')"
@@ -531,7 +530,7 @@
         <li class="command-item">
           <span class="command-text">"Allume la lumière"</span>
           <div>
-            <span class="command-action">on</span>
+            <span class="command-action">allumer</span>
             <button
               class="test-command-btn"
               onclick="testCommand('allume la lumière')"
@@ -543,7 +542,7 @@
         <li class="command-item">
           <span class="command-text">"Éteins la lumière"</span>
           <div>
-            <span class="command-action">off</span>
+            <span class="command-action">éteindre</span>
             <button
               class="test-command-btn"
               onclick="testCommand('éteins la lumière')"
@@ -575,8 +574,7 @@
   </div>
 </div>
 
-{% endblock %} 
-{% block scripts %}
+{% endblock %} {% block scripts %}
 <script>
   let voiceStats = {
     totalCommands: 0,

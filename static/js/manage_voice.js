@@ -29,7 +29,10 @@ document.addEventListener('DOMContentLoaded', function(){
       if (tbody && j.command) {
         const tr = document.createElement('tr');
         tr.style = 'border-bottom:1px solid #fafafa';
-        tr.innerHTML = `<td>${j.command.phrase}</td><td>${j.command.action}</td><td style="width:180px"><button class="cmd-edit" data-id="${j.command.id}" style="margin-right:8px;padding:6px;border-radius:6px;border:1px solid #e5e7eb;background:#fff;">Edit</button><button class="cmd-delete" data-id="${j.command.id}" style="padding:6px;border-radius:6px;border:1px solid #ef4444;background:#fff;color:#ef4444;">Delete</button></td>`;
+    // map internal action values to French labels for display
+    const actionLabels = { open: 'ouvrir', close: 'fermer', toggle: 'basculer' };
+    const actionLabel = actionLabels[j.command.action] || j.command.action;
+    tr.innerHTML = `<td>${j.command.phrase}</td><td>${actionLabel}</td><td style="width:180px"><button class="cmd-edit" data-id="${j.command.id}" style="margin-right:8px;padding:6px;border-radius:6px;border:1px solid #e5e7eb;background:#fff;">Modifier</button><button class="cmd-delete" data-id="${j.command.id}" style="padding:6px;border-radius:6px;border:1px solid #ef4444;background:#fff;color:#ef4444;">Supprimer</button></td>`;
         tbody.insertBefore(tr, tbody.firstChild);
         document.getElementById('phrase').value=''; document.getElementById('action').value='';
         showMessage('Commande enregistrée', 'success');
@@ -59,9 +62,19 @@ document.addEventListener('DOMContentLoaded', function(){
       const actionCell = row.children[1];
       window.showFormModal({
         title: 'Modifier la commande',
+        // present French labels for the select while keeping internal values unchanged
         fields: [
           { name: 'phrase', label: 'Phrase', value: phraseCell.textContent },
-          { name: 'action', label: 'Action', type: 'select', value: actionCell.textContent, options: ['open','close','toggle'] }
+          { name: 'action', label: 'Action', type: 'select', value: (function(){
+              // map displayed cell text back to internal value if needed
+              const txt = actionCell.textContent.trim().toLowerCase();
+              const rev = { 'ouvrir':'open', 'fermer':'close', 'basculer':'toggle' };
+              return rev[txt] || txt;
+            })(), options: [
+              { value: 'open', label: 'ouvrir' },
+              { value: 'close', label: 'fermer' },
+              { value: 'toggle', label: 'basculer' }
+            ] }
         ],
         submitText: 'Enregistrer',
         onSubmit: async (data) => {
