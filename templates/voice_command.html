@@ -1,7 +1,5 @@
-{% extends 'base.html' %}
-
-{% block title %}Contrôle vocal - Smart Home{% endblock %}
-
+{% extends 'base.html' %} 
+{% block title %}Contrôle vocal{% endblock %} 
 {% block extra_css %}
 <style>
   .voice-container {
@@ -17,7 +15,7 @@
   .voice-title {
     font-size: 2rem;
     font-weight: 700;
-    color: #2c3e50;
+    color: #111827;
     margin-bottom: 0.5rem;
   }
 
@@ -55,13 +53,13 @@
   }
 
   .voice-button::before {
-    content: '';
+    content: "";
     position: absolute;
     top: 50%;
     left: 50%;
     width: 0;
     height: 0;
-    background: rgba(59, 130, 246, 0.1);
+    background: rgba(102, 126, 234, 0.08);
     border-radius: 50%;
     transition: all 0.3s ease;
     transform: translate(-50%, -50%);
@@ -69,9 +67,9 @@
 
   .voice-button:hover {
     transform: translateY(-4px) scale(1.05);
-    border-color: #3b82f6;
-    color: #3b82f6;
-    box-shadow: 0 12px 32px rgba(59, 130, 246, 0.2);
+    border-color: #667eea;
+    color: #667eea;
+    box-shadow: 0 12px 32px rgba(102, 126, 234, 0.14);
   }
 
   .voice-button:hover::before {
@@ -107,8 +105,12 @@
   }
 
   @keyframes spin {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
   }
 
   .button-label {
@@ -141,13 +143,18 @@
   }
 
   .voice-status::before {
-    content: '';
+    content: "";
     position: absolute;
     top: 0;
     left: -100%;
     width: 100%;
     height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.8), transparent);
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.8),
+      transparent
+    );
     transition: left 0.5s ease;
   }
 
@@ -366,36 +373,38 @@
     .voice-container {
       padding: 0 1rem;
     }
-    
+
     .voice-control-section {
       padding: 2rem 1rem;
     }
-    
+
     .voice-button {
       width: 100px;
       height: 100px;
       font-size: 2rem;
     }
-    
+
     .commands-section {
       grid-template-columns: 1fr;
     }
   }
 </style>
-{% endblock %}
-
+{% endblock %} 
 {% block content %}
+
 <div class="voice-container">
   <div class="voice-header">
-    <h1 class="voice-title">🎤 Contrôle Vocal Intelligent</h1>
-    <p class="voice-subtitle">Commandez vos appareils par la voix avec Django + MQTT</p>
+    <h1 class="voice-title">Contrôle vocal</h1>
+    <p class="voice-subtitle">Commandez vos appareils par la voix</p>
   </div>
 
   <!-- Voice Control Section -->
   <div class="voice-control-section">
     <button class="voice-button" id="voice-btn">🎤</button>
     <div class="button-label" id="button-label">Cliquez pour parler</div>
-    <div class="voice-status" id="voice-status">Prêt à écouter vos commandes</div>
+    <div class="voice-status" id="voice-status">
+      Prêt à écouter vos commandes
+    </div>
   </div>
 
   <!-- Statistics -->
@@ -417,44 +426,60 @@
   <!-- Commands Reference -->
   <div class="commands-section">
     <div class="commands-card">
-      <h3 class="commands-title">
-        🚪 Commandes de Porte
-      </h3>
+      <h3 class="commands-title">🚪 Commandes de Porte</h3>
       <ul class="command-list">
         <li class="command-item">
           <span class="command-text">"Ouvre la porte"</span>
           <div>
             <span class="command-action">open</span>
-            <button class="test-command-btn" onclick="testCommand('ouvre la porte')">Tester</button>
+            <button
+              class="test-command-btn"
+              onclick="testCommand('ouvre la porte')"
+            >
+              Tester
+            </button>
           </div>
         </li>
         <li class="command-item">
           <span class="command-text">"Ferme la porte"</span>
           <div>
             <span class="command-action">close</span>
-            <button class="test-command-btn" onclick="testCommand('ferme la porte')">Tester</button>
+            <button
+              class="test-command-btn"
+              onclick="testCommand('ferme la porte')"
+            >
+              Tester
+            </button>
           </div>
         </li>
       </ul>
     </div>
 
     <div class="commands-card">
-      <h3 class="commands-title">
-        💡 Commandes d'Éclairage
-      </h3>
+      <h3 class="commands-title">💡 Commandes d'Éclairage</h3>
       <ul class="command-list">
         <li class="command-item">
           <span class="command-text">"Allume la lumière"</span>
           <div>
             <span class="command-action">on</span>
-            <button class="test-command-btn" onclick="testCommand('allume la lumière')">Tester</button>
+            <button
+              class="test-command-btn"
+              onclick="testCommand('allume la lumière')"
+            >
+              Tester
+            </button>
           </div>
         </li>
         <li class="command-item">
           <span class="command-text">"Éteins la lumière"</span>
           <div>
             <span class="command-action">off</span>
-            <button class="test-command-btn" onclick="testCommand('éteins la lumière')">Tester</button>
+            <button
+              class="test-command-btn"
+              onclick="testCommand('éteins la lumière')"
+            >
+              Tester
+            </button>
           </div>
         </li>
       </ul>
@@ -465,88 +490,97 @@
   <div class="activity-log">
     <div class="log-header">
       <h3 class="commands-title">📋 Journal d'Activité</h3>
-      <button class="clear-log-btn" onclick="clearActivityLog()">Vider le journal</button>
+      <button class="clear-log-btn" onclick="clearActivityLog()">
+        Vider le journal
+      </button>
     </div>
     <div class="log-list" id="activity-log">
       <div class="log-item">
-        <span class="log-message">Système de reconnaissance vocale initialisé</span>
+        <span class="log-message"
+          >Système de reconnaissance vocale initialisé</span
+        >
         <span class="log-time" id="init-time"></span>
       </div>
     </div>
   </div>
 </div>
-{% endblock %}
+
+{% endblock %} 
 
 {% block scripts %}
 <script>
   let voiceStats = {
     totalCommands: 0,
     successfulCommands: 0,
-    mqttMessages: 0
+    mqttMessages: 0,
   };
 
-  const voiceButton = document.getElementById('voice-btn');
-  const buttonLabel = document.getElementById('button-label');
-  const voiceStatus = document.getElementById('voice-status');
-  const activityLog = document.getElementById('activity-log');
+  const voiceButton = document.getElementById("voice-btn");
+  const buttonLabel = document.getElementById("button-label");
+  const voiceStatus = document.getElementById("voice-status");
+  const activityLog = document.getElementById("activity-log");
 
   // Initialize speech recognition
-  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  const SpeechRecognition =
+    window.SpeechRecognition || window.webkitSpeechRecognition;
   let recognition = null;
 
   if (SpeechRecognition) {
     recognition = new SpeechRecognition();
-    recognition.lang = 'fr-FR';
+    recognition.lang = "fr-FR";
     recognition.interimResults = false;
     recognition.maxAlternatives = 1;
     recognition.continuous = false;
   }
 
   // Update voice status
-  function updateVoiceStatus(message, type = '', loading = false) {
-    voiceStatus.className = `voice-status ${type} ${loading ? 'loading' : ''}`;
+  function updateVoiceStatus(message, type = "", loading = false) {
+    voiceStatus.className = `voice-status ${type} ${loading ? "loading" : ""}`;
     voiceStatus.textContent = message;
   }
 
   // Update button state
   function updateButtonState(state) {
     voiceButton.className = `voice-button ${state}`;
-    
-    switch(state) {
-      case 'listening':
-        buttonLabel.textContent = 'En écoute...';
-        voiceButton.innerHTML = '🎙️';
+
+    switch (state) {
+      case "listening":
+        buttonLabel.textContent = "En écoute...";
+        voiceButton.innerHTML = "🎙️";
         break;
-      case 'processing':
-        buttonLabel.textContent = 'Traitement...';
-        voiceButton.innerHTML = '⚡';
+      case "processing":
+        buttonLabel.textContent = "Traitement...";
+        voiceButton.innerHTML = "⚡";
         break;
       default:
-        buttonLabel.textContent = 'Cliquez pour parler';
-        voiceButton.innerHTML = '🎤';
+        buttonLabel.textContent = "Cliquez pour parler";
+        voiceButton.innerHTML = "🎤";
     }
   }
 
   // Add activity log entry
-  function addActivityLog(message, status = 'info') {
-    const logItem = document.createElement('div');
-    logItem.className = 'log-item';
-    
-    const statusClass = status === 'success' ? 'success' : status === 'error' ? 'error' : '';
-    const statusBadge = statusClass ? `<span class="log-status ${statusClass}">${status.toUpperCase()}</span>` : '';
-    
+  function addActivityLog(message, status = "info") {
+    const logItem = document.createElement("div");
+    logItem.className = "log-item";
+
+    const statusClass =
+      status === "success" ? "success" : status === "error" ? "error" : "";
+    const statusBadge = statusClass
+      ? `<span class="log-status ${statusClass}">${status.toUpperCase()}</span>`
+      : "";
+
     logItem.innerHTML = `
       <span class="log-message">${message}${statusBadge}</span>
-      <span class="log-time">${new Date().toLocaleTimeString('fr-FR')}</span>
+      <span class="log-time">${new Date().toLocaleTimeString("fr-FR")}</span>
     `;
-    
+
     // Insert after the init message
     if (activityLog.children.length > 1) {
       activityLog.insertBefore(logItem, activityLog.children[1]);
     } else {
       activityLog.appendChild(logItem);
     }
-    
+
     // Keep only last 20 entries
     while (activityLog.children.length > 21) {
       activityLog.removeChild(activityLog.lastChild);
@@ -555,110 +589,129 @@
 
   // Update statistics
   function updateStats() {
-    document.getElementById('commands-count').textContent = voiceStats.totalCommands;
-    document.getElementById('success-rate').textContent = 
-      voiceStats.totalCommands > 0 ? Math.round((voiceStats.successfulCommands / voiceStats.totalCommands) * 100) + '%' : '0%';
-    document.getElementById('mqtt-messages').textContent = voiceStats.mqttMessages;
+    document.getElementById("commands-count").textContent =
+      voiceStats.totalCommands;
+    document.getElementById("success-rate").textContent =
+      voiceStats.totalCommands > 0
+        ? Math.round(
+            (voiceStats.successfulCommands / voiceStats.totalCommands) * 100
+          ) + "%"
+        : "0%";
+    document.getElementById("mqtt-messages").textContent =
+      voiceStats.mqttMessages;
   }
 
   // Voice recognition event handlers
   if (recognition) {
-    voiceButton.addEventListener('click', () => {
-      if (voiceButton.classList.contains('listening')) {
+    voiceButton.addEventListener("click", () => {
+      if (voiceButton.classList.contains("listening")) {
         recognition.stop();
         return;
       }
-      
+
       recognition.start();
-      updateButtonState('listening');
-      updateVoiceStatus('J\'écoute... Parlez maintenant !', 'listening');
-      addActivityLog('Démarrage de l\'écoute vocale');
+      updateButtonState("listening");
+      updateVoiceStatus("J'écoute... Parlez maintenant !", "listening");
+      addActivityLog("Démarrage de l'écoute vocale");
     });
 
-    recognition.addEventListener('result', (event) => {
+    recognition.addEventListener("result", (event) => {
       const transcript = event.results[0][0].transcript;
       const confidence = event.results[0][0].confidence;
-      
-      updateButtonState('processing');
-      updateVoiceStatus(`Traitement de: "${transcript}"`, '', true);
-      
+
+      updateButtonState("processing");
+      updateVoiceStatus(`Traitement de: "${transcript}"`, "", true);
+
       voiceStats.totalCommands++;
-      addActivityLog(`Commande reçue: "${transcript}" (confiance: ${Math.round(confidence * 100)}%)`);
-      
+      addActivityLog(
+        `Commande reçue: "${transcript}" (confiance: ${Math.round(
+          confidence * 100
+        )}%)`
+      );
+
       // Send to Django backend
       sendVoiceCommand(transcript);
     });
 
-    recognition.addEventListener('end', () => {
-      updateButtonState('');
-      if (!voiceStatus.classList.contains('success') && !voiceStatus.classList.contains('error')) {
-        updateVoiceStatus('Prêt à écouter vos commandes');
+    recognition.addEventListener("end", () => {
+      updateButtonState("");
+      if (
+        !voiceStatus.classList.contains("success") &&
+        !voiceStatus.classList.contains("error")
+      ) {
+        updateVoiceStatus("Prêt à écouter vos commandes");
       }
     });
 
-    recognition.addEventListener('error', (event) => {
-      updateButtonState('');
-      let errorMessage = 'Erreur de reconnaissance vocale';
-      
-      switch(event.error) {
-        case 'no-speech':
-          errorMessage = 'Aucune parole détectée. Réessayez.';
+    recognition.addEventListener("error", (event) => {
+      updateButtonState("");
+      let errorMessage = "Erreur de reconnaissance vocale";
+
+      switch (event.error) {
+        case "no-speech":
+          errorMessage = "Aucune parole détectée. Réessayez.";
           break;
-        case 'network':
-          errorMessage = 'Erreur réseau. Vérifiez votre connexion.';
+        case "network":
+          errorMessage = "Erreur réseau. Vérifiez votre connexion.";
           break;
-        case 'not-allowed':
-          errorMessage = 'Microphone non autorisé. Autorisez l\'accès.';
+        case "not-allowed":
+          errorMessage = "Microphone non autorisé. Autorisez l'accès.";
           break;
-        case 'service-not-allowed':
-          errorMessage = 'Service de reconnaissance non disponible.';
+        case "service-not-allowed":
+          errorMessage = "Service de reconnaissance non disponible.";
           break;
       }
-      
-      updateVoiceStatus(errorMessage, 'error');
-      addActivityLog(`Erreur: ${errorMessage}`, 'error');
+
+      updateVoiceStatus(errorMessage, "error");
+      addActivityLog(`Erreur: ${errorMessage}`, "error");
     });
 
-    recognition.addEventListener('start', () => {
-      addActivityLog('Microphone activé');
+    recognition.addEventListener("start", () => {
+      addActivityLog("Microphone activé");
     });
   } else {
     // Speech recognition not supported
     voiceButton.disabled = true;
-    updateVoiceStatus('Reconnaissance vocale non supportée par ce navigateur', 'error');
-    addActivityLog('Reconnaissance vocale non disponible', 'error');
+    updateVoiceStatus(
+      "Reconnaissance vocale non supportée par ce navigateur",
+      "error"
+    );
+    addActivityLog("Reconnaissance vocale non disponible", "error");
   }
 
   // Send voice command to Django
   function sendVoiceCommand(command) {
     fetch('{% url "send_command" %}', {
-      method: 'POST',
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
-        'X-CSRFToken': getCookie('csrftoken')
+        "Content-Type": "application/json",
+        "X-CSRFToken": getCookie("csrftoken"),
       },
-      body: JSON.stringify({ phrase: command.toLowerCase() })
+      body: JSON.stringify({ phrase: command.toLowerCase() }),
     })
-    .then(response => response.json())
-    .then(data => {
-      if (data.status === 'ok') {
-        voiceStats.successfulCommands++;
-        voiceStats.mqttMessages++;
-        
-        updateVoiceStatus(`✅ Commande exécutée: ${data.action}`, 'success');
-        addActivityLog(`MQTT publié: action "${data.action}" pour "${command}"`, 'success');
-      } else {
-        updateVoiceStatus(`❌ ${data.message}`, 'error');
-        addActivityLog(`Échec: ${data.message} pour "${command}"`, 'error');
-      }
-      
-      updateStats();
-    })
-    .catch(error => {
-      console.error('Voice command error:', error);
-      updateVoiceStatus('Erreur de communication avec le serveur', 'error');
-      addActivityLog(`Erreur serveur pour "${command}"`, 'error');
-    });
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.status === "ok") {
+          voiceStats.successfulCommands++;
+          voiceStats.mqttMessages++;
+
+          updateVoiceStatus(`✅ Commande exécutée: ${data.action}`, "success");
+          addActivityLog(
+            `MQTT publié: action "${data.action}" pour "${command}"`,
+            "success"
+          );
+        } else {
+          updateVoiceStatus(`❌ ${data.message}`, "error");
+          addActivityLog(`Échec: ${data.message} pour "${command}"`, "error");
+        }
+
+        updateStats();
+      })
+      .catch((error) => {
+        console.error("Voice command error:", error);
+        updateVoiceStatus("Erreur de communication avec le serveur", "error");
+        addActivityLog(`Erreur serveur pour "${command}"`, "error");
+      });
   }
 
   // Test command function
@@ -671,28 +724,29 @@
   function clearActivityLog() {
     // Keep only the init message
     const initMessage = activityLog.children[0];
-    activityLog.innerHTML = '';
+    activityLog.innerHTML = "";
     activityLog.appendChild(initMessage);
-    
-    addActivityLog('Journal d\'activité vidé');
-    showMessage('Journal d\'activité vidé', 'success');
+
+    addActivityLog("Journal d'activité vidé");
+    showMessage("Journal d'activité vidé", "success");
   }
 
   // Initialize page
   function initVoicePage() {
     // Set init time
-    document.getElementById('init-time').textContent = new Date().toLocaleTimeString('fr-FR');
-    
+    document.getElementById("init-time").textContent =
+      new Date().toLocaleTimeString("fr-FR");
+
     // Update initial stats
     updateStats();
-    
+
     // Add welcome message
     if (recognition) {
-      addActivityLog('Système prêt - Cliquez sur le microphone pour commencer');
+      addActivityLog("Système prêt - Cliquez sur le microphone pour commencer");
     }
   }
 
   // Start when page loads
-  document.addEventListener('DOMContentLoaded', initVoicePage);
+  document.addEventListener("DOMContentLoaded", initVoicePage);
 </script>
 {% endblock %}

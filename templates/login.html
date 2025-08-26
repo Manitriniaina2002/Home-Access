@@ -1,240 +1,396 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <title>Connexion - Smart Home Control</title>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Connexion - Portail d'accès</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-      color: #2c3e50;
-    }
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            color: white;
+            overflow-x: hidden;
+        }
 
-    .login-container {
-      background: white;
-      border-radius: 16px;
-      padding: 3rem 2.5rem;
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-      max-width: 420px;
-      width: 100%;
-      border: 1px solid rgba(255, 255, 255, 0.8);
-      text-align: center;
-      animation: slideIn 0.6s ease-out;
-    }
+        .floating-particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            pointer-events: none;
+            z-index: -1;
+        }
 
-    @keyframes slideIn {
-      from {
-        opacity: 0;
-        transform: translateY(20px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
+        .particle {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            animation: float 6s infinite linear;
+        }
 
-    .login-header {
-      margin-bottom: 2rem;
-    }
+        @keyframes float {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
 
-    .logo {
-      font-size: 3rem;
-      margin-bottom: 1rem;
-      animation: pulse 2s infinite;
-    }
+        .login-container {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(15px);
+            border-radius: 20px;
+            padding: 3rem 2rem;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+            color: #111827;
+            position: relative;
+            transform: translateY(-8px);
+        }
 
-    @keyframes pulse {
-      0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.05); }
-    }
+        .login-header {
+            margin-bottom: 2rem;
+        }
 
-    .login-title {
-      font-size: 1.75rem;
-      font-weight: 600;
-      color: #2c3e50;
-      margin-bottom: 0.5rem;
-    }
+        .security-badge {
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            border-radius: 20px;
+            padding: 0.5rem 1rem;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: white;
+            margin-bottom: 1rem;
+        }
 
-    .login-subtitle {
-      color: #64748b;
-      font-size: 0.95rem;
-      line-height: 1.4;
-    }
+        .logo {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            font-weight: 800;
+            color: #4c2fb0;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
 
-    .form-group {
-      margin-bottom: 1.5rem;
-      text-align: left;
-    }
+        .login-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #111827;
+            margin-bottom: 0.5rem;
+        }
 
-    .form-label {
-      display: block;
-      font-weight: 500;
-      color: #374151;
-      margin-bottom: 0.5rem;
-      font-size: 0.9rem;
-    }
+        .login-subtitle {
+            color: #6b7280;
+            font-size: 1rem;
+            line-height: 1.4;
+            margin-bottom: 1rem;
+        }
 
-    .form-input {
-      width: 100%;
-      padding: 0.75rem 1rem;
-      border: 2px solid #e5e7eb;
-      border-radius: 8px;
-      font-size: 1rem;
-      transition: all 0.2s ease;
-      background: #f9fafb;
-    }
+        .form-group {
+            margin-bottom: 1.5rem;
+            text-align: left;
+        }
 
-    .form-input:focus {
-      outline: none;
-      border-color: #3b82f6;
-      background: white;
-      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-    }
+        .form-label {
+            display: block;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 0.5rem;
+            font-size: 0.95rem;
+        }
 
-    .login-btn {
-      width: 100%;
-      padding: 0.875rem;
-      background: #3b82f6;
-      color: white;
-      border: none;
-      border-radius: 8px;
-      font-size: 1rem;
-      font-weight: 500;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      margin-top: 1rem;
-    }
+        .input-modern {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            background: rgba(255, 255, 255, 0.9);
+            border: 1px solid #e6eefb;
+            border-radius: 10px;
+            font-size: 1rem;
+            color: #0f172a;
+            transition: box-shadow 0.2s ease, border-color 0.2s ease;
+            outline: none;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
 
-    .login-btn:hover {
-      background: #2563eb;
-      transform: translateY(-1px);
-      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
-    }
+        .input-modern:focus {
+            background: #fff;
+            border-color: rgba(102, 126, 234, 0.9);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
+        }
 
-    .login-btn:active {
-      transform: translateY(0);
-    }
+        .input-modern::placeholder {
+            color: #94a3b8;
+        }
 
-    .error-message {
-      background: #fef2f2;
-      border: 1px solid #fecaca;
-      color: #dc2626;
-      padding: 0.75rem;
-      border-radius: 8px;
-      font-size: 0.875rem;
-      margin-top: 1rem;
-      text-align: center;
-    }
+        .login-btn {
+            width: 100%;
+            padding: 0.95rem;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 10px;
+            color: white;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: box-shadow 0.2s ease, transform 0.2s ease;
+            margin-top: 1.25rem;
+            border: none;
+        }
 
-    .system-info {
-      margin-top: 2rem;
-      padding-top: 2rem;
-      border-top: 1px solid #f1f5f9;
-      font-size: 0.8rem;
-      color: #64748b;
-    }
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 14px 30px rgba(102, 126, 234, 0.3);
+        }
 
-    .system-info strong {
-      color: #374151;
-    }
+        .error-message {
+            background: #fff1f2;
+            border: 1px solid #fecaca;
+            color: #991b1b;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            margin-top: 1rem;
+            text-align: center;
+        }
 
-    .demo-credentials {
-      background: #eff6ff;
-      border: 1px solid #bfdbfe;
-      border-radius: 8px;
-      padding: 1rem;
-      margin-top: 1rem;
-      font-size: 0.85rem;
-      color: #1e40af;
-    }
+        .system-info {
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
 
-    @media (max-width: 480px) {
-      .login-container {
-        padding: 2rem 1.5rem;
-        margin: 1rem;
-      }
-      
-      .login-title {
-        font-size: 1.5rem;
-      }
-    }
-  </style>
+        .feature-list {
+            list-style: none;
+            margin: 1rem 0;
+        }
+
+        .feature-list li {
+            margin: 0.5rem 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .feature-icon {
+            width: 16px;
+            height: 16px;
+            background: rgba(16, 185, 129, 0.3);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+        }
+
+        .demo-credentials {
+            background: rgba(102, 126, 234, 0.08);
+            border: 1px solid rgba(118, 75, 162, 0.08);
+            backdrop-filter: blur(6px);
+            border-radius: 10px;
+            padding: 0.85rem;
+            margin-top: 1rem;
+            font-size: 0.85rem;
+            color: #374151;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 480px) {
+            .login-container {
+                padding: 2rem 1.5rem;
+                margin: 1rem;
+                border-radius: 20px;
+            }
+
+            .login-title {
+                font-size: 1.75rem;
+            }
+
+            .logo {
+                font-size: 3rem;
+            }
+
+            .input-modern {
+                font-size: 16px; /* Prevent zoom on iOS */
+                padding: 1rem;
+            }
+        }
+
+        @media (max-width: 374px) {
+            .login-container {
+                padding: 1.5rem 1rem;
+            }
+
+            .login-title {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
 </head>
 <body>
-  <div class="login-container">
-    <div class="login-header">
-      <div class="logo">🏠</div>
-      <h1 class="login-title">Smart Home Control</h1>
-      <p class="login-subtitle">
-        Système de contrôle vocal intelligent<br>
-        avec intégration Django + MQTT
-      </p>
+    <!-- Floating Particles -->
+    <div class="floating-particles">
+        <div class="particle" style="left: 10%; animation-delay: 0s; width: 4px; height: 4px"></div>
+        <div class="particle" style="left: 20%; animation-delay: 1s; width: 6px; height: 6px"></div>
+        <div class="particle" style="left: 30%; animation-delay: 2s; width: 3px; height: 3px"></div>
+        <div class="particle" style="left: 40%; animation-delay: 3s; width: 5px; height: 5px"></div>
+        <div class="particle" style="left: 50%; animation-delay: 4s; width: 4px; height: 4px"></div>
+        <div class="particle" style="left: 60%; animation-delay: 5s; width: 6px; height: 6px"></div>
+        <div class="particle" style="left: 70%; animation-delay: 0.5s; width: 3px; height: 3px"></div>
+        <div class="particle" style="left: 80%; animation-delay: 1.5s; width: 5px; height: 5px"></div>
+        <div class="particle" style="left: 90%; animation-delay: 2.5s; width: 4px; height: 4px"></div>
     </div>
-    
-    <form method="post" action="{% url 'login' %}">
-      {% csrf_token %}
-      
-      <div class="form-group">
-        <label class="form-label" for="username">Nom d'utilisateur</label>
-        <input 
-          type="text" 
-          id="username" 
-          name="username"
-          class="form-input" 
-          placeholder="Entrez votre nom d'utilisateur" 
-          required 
-          autocomplete="username"
-        >
-      </div>
-      
-      <div class="form-group">
-        <label class="form-label" for="password">Mot de passe</label>
-        <input 
-          type="password" 
-          id="password" 
-          name="password"
-          class="form-input" 
-          placeholder="Entrez votre mot de passe" 
-          required
-          autocomplete="current-password"
-        >
-      </div>
-      
-      <button type="submit" class="login-btn">
-        Se connecter
-      </button>
-      
-      {% if error %}
-      <div class="error-message">
-        {{ error }}
-      </div>
-      {% endif %}
-    </form>
 
-    <div class="system-info">
-      <strong>Fonctionnalités système:</strong><br>
-      • Reconnaissance vocale en français<br>
-      • Publication MQTT automatique<br>
-      • Interface d'administration Django<br>
-      • Gestion des appareils connectés
-      
-      <div class="demo-credentials">
-        <strong>💡 Pour tester:</strong><br>
-        Créez un compte via Django Admin ou utilisez<br>
-        les commandes Django de gestion des utilisateurs
-      </div>
-    </div>
-  </div>
+    <main class="login-container" role="main">
+        <header class="login-header">
+            <div class="security-badge" aria-label="Accès Sécurisé">
+                <svg width="16" height="16" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M10 1L5 4v6c0 5.55 3.84 9.74 9 9.74s9-4.19 9-9.74V4l-5-3z" clip-rule="evenodd" />
+                </svg>
+                Accès Sécurisé
+            </div>
+            <div class="logo">Portail</div>
+            <h1 class="login-title">Connexion</h1>
+            <p class="login-subtitle">Accédez à votre espace sécurisé en entrant vos identifiants.</p>
+        </header>
+
+        <form method="post" action="/login/" id="login-form" aria-labelledby="login-title">
+            {% csrf_token %}
+            <div class="form-group">
+                <label class="form-label" for="username">Nom d'utilisateur</label>
+                <input type="text" id="username" name="username" class="input-modern" placeholder="Entrez votre nom d'utilisateur" required autocomplete="username" aria-label="Nom d'utilisateur" />
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="password">Mot de passe</label>
+                <input type="password" id="password" name="password" class="input-modern" placeholder="Entrez votre mot de passe" required autocomplete="current-password" aria-label="Mot de passe" />
+            </div>
+
+            <button type="submit" class="login-btn" id="login-button" aria-label="Se connecter">
+                Se connecter
+            </button>
+
+            {% if error %}
+            <div id="error-message" class="error-message">{{ error }}</div>
+            {% else %}
+            <div id="error-message" class="error-message" style="display: none">Identifiants invalides</div>
+            {% endif %}
+        </form>
+
+        <div class="system-info">
+            <strong>Fonctionnalités:</strong>
+            <ul class="feature-list">
+                <li><span class="feature-icon">✓</span> Contrôle des accès</li>
+                <li><span class="feature-icon">✓</span> Gestion des appareils</li>
+                <li><span class="feature-icon">✓</span> Console d'administration</li>
+            </ul>
+            <div class="demo-credentials">
+                <strong>Remarque:</strong><br />
+                Contactez l'administrateur pour créer un compte.
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Enhanced form handling
+        document.getElementById("login-form").addEventListener("submit", function (e) {
+            const button = document.getElementById("login-button");
+            const errorDiv = document.getElementById("error-message");
+
+            // Add loading state
+            button.classList.add("loading");
+            button.textContent = "";
+
+            // Hide previous errors
+            errorDiv.style.display = "none";
+
+            // In a real Django app, form would submit normally
+            // This is just for demonstration
+            setTimeout(() => {
+                button.classList.remove("loading");
+                button.textContent = "Se connecter";
+
+                // Simulate error for demo
+                const username = document.getElementById("username").value;
+                const password = document.getElementById("password").value;
+
+                if (!username || !password) {
+                    errorDiv.textContent = "Veuillez remplir tous les champs";
+                    errorDiv.style.display = "block";
+                    e.preventDefault();
+                }
+            }, 1500);
+        });
+
+        // Enhanced input focus effects
+        document.querySelectorAll(".input-modern").forEach((input) => {
+            input.addEventListener("focus", function () {
+                this.parentNode.querySelector(".form-label").style.color = "rgba(255, 255, 255, 1)";
+            });
+
+            input.addEventListener("blur", function () {
+                this.parentNode.querySelector(".form-label").style.color = "rgba(255, 255, 255, 0.9)";
+            });
+        });
+
+        // Add subtle parallax effect to particles on mouse move
+        document.addEventListener("mousemove", function (e) {
+            const particles = document.querySelectorAll(".particle");
+            const x = e.clientX / window.innerWidth;
+            const y = e.clientY / window.innerHeight;
+
+            particles.forEach((particle, index) => {
+                const speed = (index + 1) * 0.5;
+                const translateX = (x - 0.5) * speed;
+                const translateY = (y - 0.5) * speed;
+
+                particle.style.transform += ` translate(${translateX}px, ${translateY}px)`;
+            });
+        });
+
+        // Announce to screen readers when page loads
+        window.addEventListener("load", function () {
+            const announcement = document.createElement("div");
+            announcement.setAttribute("aria-live", "polite");
+            announcement.setAttribute("aria-atomic", "true");
+            announcement.style.position = "absolute";
+            announcement.style.left = "-10000px";
+            announcement.style.width = "1px";
+            announcement.style.height = "1px";
+            announcement.style.overflow = "hidden";
+            announcement.textContent = "Page de connexion Smart Home Control chargée. Saisissez vos identifiants pour accéder au système.";
+
+            document.body.appendChild(announcement);
+
+            setTimeout(() => {
+                document.body.removeChild(announcement);
+            }, 2000);
+        });
+    </script>
 </body>
 </html>

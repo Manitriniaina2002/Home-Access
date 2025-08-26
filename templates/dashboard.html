@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block title %}Tableau de bord - Smart Home{% endblock %}
+{% block title %}Tableau de bord{% endblock %}
 
 {% block extra_css %}
 <style>
@@ -36,7 +36,7 @@
     font-size: 2rem;
     padding: 0.5rem;
     border-radius: 12px;
-    background: linear-gradient(135deg, #3b82f6, #1e40af);
+    background: linear-gradient(135deg, #667eea, #764ba2);
     color: white;
     display: flex;
     align-items: center;
@@ -121,8 +121,8 @@
 
   .action-btn:hover {
     background: #f1f5f9;
-    border-color: #3b82f6;
-    color: #3b82f6;
+    border-color: #667eea;
+    color: #667eea;
   }
 
   .welcome-section {
@@ -247,9 +247,7 @@
 <div class="welcome-section">
   <div class="welcome-content">
     <h1 class="welcome-title">Bienvenue, {{ user.username }} !</h1>
-    <p class="welcome-subtitle">
-      Tableau de bord du système Smart Home
-    </p>
+    <p class="welcome-subtitle">Vue d'ensemble de votre espace</p>
     <div class="system-time" id="current-time"></div>
   </div>
 </div>
@@ -266,12 +264,12 @@
     </div>
     
     <div class="stat-item">
-      <span class="stat-label">Django Backend</span>
+      <span class="stat-label">Services</span>
       <span class="status-badge status-online">En ligne</span>
     </div>
     <div class="stat-item">
-      <span class="stat-label">MQTT Broker</span>
-      <span class="status-badge status-online" id="mqtt-status">Connecté</span>
+      <span class="stat-label">Connectivité</span>
+      <span class="status-badge status-online" id="mqtt-status">Active</span>
     </div>
     <div class="stat-item">
       <span class="stat-label">Base de données</span>
@@ -279,7 +277,7 @@
     </div>
     <div class="stat-item">
       <span class="stat-label">Reconnaissance vocale</span>
-      <span class="status-badge" id="speech-status">Vérification...</span>
+      <span class="status-badge" id="speech-status">Disponible</span>
     </div>
   </div>
 
