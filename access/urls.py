@@ -1,4 +1,5 @@
 from django.urls import path
+
 from .views import *
 
 urlpatterns = [
@@ -22,4 +23,7 @@ urlpatterns = [
     path('unlock/', unlock_with_pin, name='unlock_with_pin'),
     path('pending/', get_pending_command, name='get_pending_command'),
     path('confirm/<int:log_id>/', confirm_command, name='confirm_command'),
+
+    # MQTT event log API
+    path('door_event_log/', door_event_log, name='door_event_log'),
 ]

@@ -6,7 +6,26 @@ from django.contrib.auth.decorators import login_required
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from .models import VoiceCommand, AccessLog
-from .models import DoorPin, PinAttempt
+from .models import DoorPin, PinAttempt, DoorEvent
+from django.views.decorators.csrf import csrf_exempt
+
+from django.utils.dateformat import format as date_format
+from django.http import JsonResponse
+
+# API: Get latest DoorEvent logs (for dashboard)
+@login_required
+def door_event_log(request):
+    # Return the 20 most recent events, newest first
+    events = DoorEvent.objects.order_by('-timestamp')[:20]
+    data = [
+        {
+            'timestamp': date_format(e.timestamp, 'Y-m-d H:i:s'),
+            'status': e.status,
+            'payload': e.payload,
+        }
+        for e in events
+    ]
+    return JsonResponse({'events': data})
 from django.contrib.admin.views.decorators import staff_member_required
 from django.views.decorators.http import require_POST
 from django.http import JsonResponse

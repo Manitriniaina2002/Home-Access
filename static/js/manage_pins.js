@@ -1,5 +1,6 @@
 // JS for manage_pins — moved out of template
 document.addEventListener('DOMContentLoaded', function(){
+  console.log('[manage_pins] DOMContentLoaded');
   const container = document.getElementById('manage-pins');
   if (!container) return;
 
@@ -37,7 +38,13 @@ document.addEventListener('DOMContentLoaded', function(){
   document.querySelectorAll('.pin-delete').forEach((btn) => {
     btn.addEventListener('click', (e) => {
       e.preventDefault();
+      console.log('[manage_pins] delete clicked for id=', btn.dataset.id);
       const id = btn.dataset.id;
+      if (typeof window.confirmModal !== 'function') {
+        console.warn('[manage_pins] confirmModal is not defined');
+        showMessage('Impossible d\'afficher la modale de confirmation (confirmModal absent)', 'error');
+        return;
+      }
       window.confirmModal('Supprimer ce PIN ?', async () => {
         const url = deleteBase.replace('/0/', '/' + id + '/');
         try {
@@ -54,10 +61,16 @@ document.addEventListener('DOMContentLoaded', function(){
   document.querySelectorAll('.pin-edit').forEach((btn) => {
     btn.addEventListener('click', (e) => {
       e.preventDefault();
+      console.log('[manage_pins] edit clicked for id=', btn.dataset.id);
       const id = btn.dataset.id;
       const li = btn.closest('li');
       const currentNameEl = li.querySelector('div > strong');
       const currentName = currentNameEl ? currentNameEl.textContent : '';
+      if (typeof window.showFormModal !== 'function') {
+        console.warn('[manage_pins] showFormModal is not defined');
+        showMessage('Impossible d\'afficher le formulaire (showFormModal absent)', 'error');
+        return;
+      }
       window.showFormModal({
         title: 'Modifier PIN',
         fields: [

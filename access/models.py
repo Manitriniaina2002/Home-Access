@@ -35,6 +35,17 @@ class AccessLog(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
 
+class DoorEvent(models.Model):
+    """Enregistre les événements de la porte reçus via MQTT."""
+    topic = models.CharField(max_length=200, null=True, blank=True, db_index=True)
+    status = models.CharField(max_length=100)
+    payload = models.TextField(null=True, blank=True)
+    timestamp = models.DateTimeField(default=timezone.now)
+
+    def __str__(self):
+        return f"{self.status} @ {self.timestamp.isoformat()}"
+
+
 class DoorPin(models.Model):
     name = models.CharField(max_length=50, blank=True, default='main')
     hashed_pin = models.CharField(max_length=128)

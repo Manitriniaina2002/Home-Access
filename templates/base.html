@@ -1,370 +1,1225 @@
 <!DOCTYPE html>
 <html lang="fr">
-<head>
-  <meta charset="UTF-8" />
-  <title>{% block title %}Portail d'accès{% endblock %}</title>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{% block title %}Portail d'accès{% endblock %}</title>
+    <style>
+      :root {
+        /* Modern Color Palette */
+        --primary-50: #f0f9ff;
+        --primary-100: #e0f2fe;
+        --primary-200: #bae6fd;
+        --primary-500: #0ea5e9;
+        --primary-600: #0284c7;
+        --primary-700: #0369a1;
+        --primary-900: #0c4a6e;
 
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      min-height: 100vh;
-      color: #111827;
-    }
+        --neutral-50: #f8fafc;
+        --neutral-100: #f1f5f9;
+        --neutral-200: #e2e8f0;
+        --neutral-300: #cbd5e1;
+        --neutral-400: #94a3b8;
+        --neutral-500: #64748b;
+        --neutral-600: #475569;
+        --neutral-700: #334155;
+        --neutral-800: #1e293b;
+        --neutral-900: #0f172a;
 
-    /* Navigation Styles */
-    nav {
-      background: white;
-      padding: 1rem 2rem;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-      margin-bottom: 2rem;
-    }
+        --success-500: #10b981;
+        --error-500: #ef4444;
+        --warning-500: #f59e0b;
 
-    nav .nav-container {
-      max-width: 1200px;
-      margin: 0 auto;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
+        /* Spacing Scale */
+        --space-1: 0.25rem;
+        --space-2: 0.5rem;
+        --space-3: 0.75rem;
+        --space-4: 1rem;
+        --space-6: 1.5rem;
+        --space-8: 2rem;
+        --space-12: 3rem;
 
-    .nav-brand {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      font-size: 1.1rem;
-      font-weight: 600;
-      color: #111827;
-    }
+        /* Typography Scale */
+        --text-xs: 0.75rem;
+        --text-sm: 0.875rem;
+        --text-base: 1rem;
+        --text-lg: 1.125rem;
+        --text-xl: 1.25rem;
+        --text-2xl: 1.5rem;
+        --text-3xl: 1.875rem;
+        --text-4xl: 2.25rem;
 
-    .nav-links {
-      display: flex;
-      align-items: center;
-      gap: 1.5rem;
-    }
+        /* Border Radius */
+        --radius-sm: 0.375rem;
+        --radius-md: 0.5rem;
+        --radius-lg: 0.75rem;
+        --radius-xl: 1rem;
+        --radius-2xl: 1.5rem;
 
-    .nav-links a {
-      color: #475569;
-      text-decoration: none;
-      font-weight: 500;
-      padding: 0.5rem 1rem;
-      border-radius: 6px;
-      transition: all 0.15s ease;
-    }
+        /* Shadows */
+        --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+        --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1),
+          0 2px 4px -2px rgb(0 0 0 / 0.1);
+        --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1),
+          0 4px 6px -4px rgb(0 0 0 / 0.1);
+        --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1),
+          0 8px 10px -6px rgb(0 0 0 / 0.1);
 
-    .nav-links a:hover {
-      background: rgba(255,255,255,0.08);
-      color: #764ba2;
-    }
-
-    .nav-links a.active {
-      background: linear-gradient(135deg, #667eea, #764ba2);
-      color: white;
-    }
-
-    /* Container Styles */
-    .container {
-      margin: 0 auto;
-      max-width: 1200px;
-      padding: 0 2rem;
-    }
-
-    .card {
-      background: white;
-      border-radius: 12px;
-      padding: 2rem;
-      margin: 2rem 0;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-      border: 1px solid rgba(255, 255, 255, 0.8);
-    }
-
-    /* Button Styles */
-    button, .btn {
-      padding: 0.75rem 1.5rem;
-      font-size: 1rem;
-      border-radius: 8px;
-      cursor: pointer;
-      font-weight: 500;
-      transition: all 0.2s ease;
-      border: none;
-    }
-
-    .btn-primary {
-      background: linear-gradient(135deg, #667eea, #764ba2);
-      color: white;
-    }
-
-    .btn-primary:hover {
-      background: #6b46c1;
-      transform: translateY(-1px);
-    }
-
-    .btn-danger {
-      background: #ef4444;
-      color: white;
-    }
-
-    .btn-danger:hover {
-      background: #dc2626;
-    }
-
-    /* Form Styles */
-    .form-group {
-      margin-bottom: 1.5rem;
-    }
-
-    .form-label {
-      display: block;
-      font-weight: 500;
-      color: #374151;
-      margin-bottom: 0.5rem;
-      font-size: 0.9rem;
-    }
-
-    .form-input {
-      width: 100%;
-      padding: 0.75rem 1rem;
-      border: 2px solid #e5e7eb;
-      border-radius: 8px;
-      font-size: 1rem;
-      transition: all 0.2s ease;
-      background: #f9fafb;
-    }
-
-    .form-input:focus {
-      outline: none;
-      border-color: #667eea;
-      background: white;
-      box-shadow: 0 0 0 3px rgba(102,126,234,0.12);
-    }
-
-    /* Utility Classes */
-    .text-center {
-      text-align: center;
-    }
-
-    .text-error {
-      color: #dc2626;
-    }
-
-    .text-success {
-      color: #059669;
-    }
-
-    .mb-1 { margin-bottom: 0.5rem; }
-    .mb-2 { margin-bottom: 1rem; }
-    .mb-3 { margin-bottom: 1.5rem; }
-    .mb-4 { margin-bottom: 2rem; }
-
-    .mt-1 { margin-top: 0.5rem; }
-    .mt-2 { margin-top: 1rem; }
-    .mt-3 { margin-top: 1.5rem; }
-    .mt-4 { margin-top: 2rem; }
-
-    /* Responsive */
-    @media (max-width: 768px) {
-      .nav-container {
-        flex-direction: column;
-        gap: 1rem;
+        /* Transitions */
+        --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+        --transition-base: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+        --transition-slow: 350ms cubic-bezier(0.4, 0, 0.2, 1);
       }
-      
-      .nav-links {
-        gap: 1rem;
-      }
-      
-      .container {
-        padding: 0 1rem;
-      }
-    }
-  </style>
-  <!-- Tailwind CSS CDN for utility classes and quicker styling -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  {% block extra_css %}{% endblock %}
-</head>
-<body>
-  {% if user.is_authenticated %}
-  <nav>
-    <div class="nav-container">
-      <div class="nav-brand">Portail d'accès</div>
-      <div class="nav-links">
-        <a href="{% url 'dashboard' %}" {% if request.resolver_match.url_name == 'dashboard' %}class="active"{% endif %}>
-          Tableau de bord
-        </a>
-        <a href="{% url 'voice' %}" {% if request.resolver_match.url_name == 'voice' %}class="active"{% endif %}>
-          Commande
-        </a>
-  {% if user.is_staff %}
-  <a href="{% url 'manage_voice' %}" {% if request.resolver_match.url_name == 'manage_voice' %}class="active"{% endif %}>Gestion Voix</a>
-  <a href="{% url 'manage_pins' %}" {% if request.resolver_match.url_name == 'manage_pins' %}class="active"{% endif %}>Gestion PINs</a>
-  {% endif %}
-        <span style="color: #475569;">Bienvenue, {{ user.username }}</span>
-        <a href="{% url 'logout' %}" class="btn btn-danger" style="padding: 0.5rem 1rem;">
-          Déconnexion
-        </a>
-      </div>
-    </div>
-  </nav>
-  {% endif %}
 
-  <div class="container">
-    {% block content %}{% endblock %}
-  </div>
-
-  <!-- Global JavaScript -->
-  <script>
-    // CSRF Token function
-    function getCookie(name) {
-      let cookieValue = null;
-      if (document.cookie && document.cookie !== '') {
-        const cookies = document.cookie.split(';');
-        for (let i = 0; i < cookies.length; i++) {
-          const cookie = cookies[i].trim();
-          if (cookie.startsWith(name + '=')) {
-            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-            break;
-          }
-        }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
       }
-      return cookieValue;
-    }
 
-    // Global utility functions
-    function showMessage(message, type = 'info') {
-      const alertDiv = document.createElement('div');
-      alertDiv.style.cssText = `
-        position: fixed;
-        top: 20px;
-        right: 20px;
-        padding: 1rem 1.5rem;
-        border-radius: 8px;
+      body {
+        font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI",
+          Roboto, "Helvetica Neue", Arial, sans-serif;
+        background: var(--neutral-50);
+        color: var(--neutral-900);
+        line-height: 1.6;
+        font-size: var(--text-base);
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+
+      /* Navigation */
+      .navbar {
+        background: white;
+        border-bottom: 1px solid var(--neutral-200);
+        backdrop-filter: blur(20px);
+        position: sticky;
+        top: 0;
+        z-index: 50;
+      }
+
+      .navbar-content {
+        max-width: 1280px;
+        margin: 0 auto;
+        padding: 0 var(--space-6);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        height: 4rem;
+      }
+
+      .navbar-brand {
+        display: flex;
+        align-items: center;
+        gap: var(--space-3);
+        font-weight: 700;
+        font-size: var(--text-lg);
+        color: var(--neutral-900);
+        text-decoration: none;
+      }
+
+      .brand-icon {
+        width: 2rem;
+        height: 2rem;
+        background: linear-gradient(
+          135deg,
+          var(--primary-500),
+          var(--primary-700)
+        );
+        border-radius: var(--radius-lg);
+        display: flex;
+        align-items: center;
+        justify-content: center;
         color: white;
-        font-weight: 500;
-        z-index: 1000;
-        animation: slideIn 0.3s ease;
-      `;
-      
-      switch(type) {
-        case 'success':
-          alertDiv.style.background = '#059669';
-          break;
-        case 'error':
-          alertDiv.style.background = '#dc2626';
-          break;
-        case 'warning':
-          alertDiv.style.background = '#d97706';
-          break;
-        default:
-          alertDiv.style.background = '#667eea';
+        font-weight: 700;
       }
-      
-      alertDiv.textContent = message;
-      document.body.appendChild(alertDiv);
-      
-      setTimeout(() => {
-        alertDiv.remove();
-      }, 4000);
-    }
-  </script>
-  <!-- Global modal (hidden by default) -->
-  <div id="global-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-    <div class="bg-white rounded-lg shadow-lg w-full max-w-lg p-6" role="dialog" aria-modal="true" aria-labelledby="modal-title">
-      <div id="modal-body">
-        <!-- dynamic content injected here -->
+
+      .navbar-nav {
+        display: flex;
+        align-items: center;
+        gap: var(--space-1);
+      }
+
+      .nav-item {
+        color: var(--neutral-600);
+        text-decoration: none;
+        font-weight: 500;
+        padding: var(--space-2) var(--space-4);
+        border-radius: var(--radius-md);
+        transition: all var(--transition-fast);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .nav-item::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: var(--primary-50);
+        transform: scaleX(0);
+        transform-origin: right;
+        transition: transform var(--transition-fast);
+        z-index: -1;
+      }
+
+      .nav-item:hover::before,
+      .nav-item.active::before {
+        transform: scaleX(1);
+        transform-origin: left;
+      }
+
+      .nav-item:hover,
+      .nav-item.active {
+        color: var(--primary-700);
+      }
+
+      .nav-item.active {
+        font-weight: 600;
+      }
+
+      .user-menu {
+        display: flex;
+        align-items: center;
+        gap: var(--space-4);
+        margin-left: var(--space-6);
+        padding-left: var(--space-6);
+        border-left: 1px solid var(--neutral-200);
+      }
+
+      .user-info {
+        color: var(--neutral-600);
+        font-size: var(--text-sm);
+      }
+
+      /* Button System */
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: var(--space-2);
+        padding: var(--space-2) var(--space-4);
+        border: 1px solid transparent;
+        border-radius: var(--radius-md);
+        font-size: var(--text-sm);
+        font-weight: 500;
+        text-decoration: none;
+        cursor: pointer;
+        transition: all var(--transition-fast);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .btn::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          45deg,
+          transparent 30%,
+          rgba(255, 255, 255, 0.2) 50%,
+          transparent 70%
+        );
+        transform: translateX(-100%);
+        transition: transform 0.6s ease;
+      }
+
+      .btn:hover::before {
+        transform: translateX(100%);
+      }
+
+      .btn-primary {
+        background: linear-gradient(
+          135deg,
+          var(--primary-500),
+          var(--primary-600)
+        );
+        color: white;
+        box-shadow: var(--shadow-sm);
+      }
+
+      .btn-primary:hover {
+        background: linear-gradient(
+          135deg,
+          var(--primary-600),
+          var(--primary-700)
+        );
+        transform: translateY(-1px);
+        box-shadow: var(--shadow-md);
+      }
+
+      .btn-secondary {
+        background: white;
+        color: var(--neutral-700);
+        border-color: var(--neutral-300);
+      }
+
+      .btn-secondary:hover {
+        background: var(--neutral-50);
+        border-color: var(--neutral-400);
+      }
+
+      .btn-danger {
+        background: var(--error-500);
+        color: white;
+      }
+
+      .btn-danger:hover {
+        background: #dc2626;
+        transform: translateY(-1px);
+      }
+
+      .btn-lg {
+        padding: var(--space-3) var(--space-6);
+        font-size: var(--text-base);
+      }
+
+      .btn-sm {
+        padding: var(--space-1) var(--space-3);
+        font-size: var(--text-xs);
+      }
+
+      /* Card System */
+      .card {
+        background: white;
+        border: 1px solid var(--neutral-200);
+        border-radius: var(--radius-xl);
+        box-shadow: var(--shadow-sm);
+        transition: all var(--transition-base);
+        overflow: hidden;
+      }
+
+      .card:hover {
+        box-shadow: var(--shadow-lg);
+        transform: translateY(-2px);
+      }
+
+      .card-header {
+        padding: var(--space-6);
+        border-bottom: 1px solid var(--neutral-100);
+        background: var(--neutral-50);
+      }
+
+      .card-body {
+        padding: var(--space-6);
+      }
+
+      .card-footer {
+        padding: var(--space-4) var(--space-6);
+        background: var(--neutral-50);
+        border-top: 1px solid var(--neutral-100);
+      }
+
+      /* Container System */
+      .container {
+        max-width: 1280px;
+        margin: 0 auto;
+        padding: 0 var(--space-6);
+      }
+
+      .container-sm {
+        max-width: 640px;
+      }
+
+      .container-lg {
+        max-width: 1536px;
+      }
+
+      /* Form System */
+      .form-group {
+        margin-bottom: var(--space-6);
+      }
+
+      .form-label {
+        display: block;
+        font-weight: 600;
+        color: var(--neutral-700);
+        margin-bottom: var(--space-2);
+        font-size: var(--text-sm);
+      }
+
+      .form-input {
+        width: 100%;
+        padding: var(--space-3) var(--space-4);
+        border: 1px solid var(--neutral-300);
+        border-radius: var(--radius-lg);
+        font-size: var(--text-base);
+        background: white;
+        transition: all var(--transition-fast);
+      }
+
+      .form-input:focus {
+        outline: none;
+        border-color: var(--primary-500);
+        box-shadow: 0 0 0 3px rgb(14 165 233 / 0.1);
+        background: var(--neutral-50);
+      }
+
+      .form-input:hover {
+        border-color: var(--neutral-400);
+      }
+
+      /* Grid System */
+      .grid {
+        display: grid;
+        gap: var(--space-6);
+      }
+
+      .grid-cols-1 {
+        grid-template-columns: repeat(1, 1fr);
+      }
+      .grid-cols-2 {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .grid-cols-3 {
+        grid-template-columns: repeat(3, 1fr);
+      }
+      .grid-cols-4 {
+        grid-template-columns: repeat(4, 1fr);
+      }
+
+      @media (max-width: 768px) {
+        .grid-cols-2,
+        .grid-cols-3,
+        .grid-cols-4 {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      /* Utility Classes */
+      .text-center {
+        text-align: center;
+      }
+      .text-left {
+        text-align: left;
+      }
+      .text-right {
+        text-align: right;
+      }
+
+      .text-xs {
+        font-size: var(--text-xs);
+      }
+      .text-sm {
+        font-size: var(--text-sm);
+      }
+      .text-lg {
+        font-size: var(--text-lg);
+      }
+      .text-xl {
+        font-size: var(--text-xl);
+      }
+      .text-2xl {
+        font-size: var(--text-2xl);
+      }
+      .text-3xl {
+        font-size: var(--text-3xl);
+      }
+
+      .text-neutral-500 {
+        color: var(--neutral-500);
+      }
+      .text-neutral-600 {
+        color: var(--neutral-600);
+      }
+      .text-neutral-700 {
+        color: var(--neutral-700);
+      }
+      .text-neutral-900 {
+        color: var(--neutral-900);
+      }
+      .text-primary-600 {
+        color: var(--primary-600);
+      }
+      .text-success-600 {
+        color: var(--success-500);
+      }
+      .text-error-600 {
+        color: var(--error-500);
+      }
+
+      .font-medium {
+        font-weight: 500;
+      }
+      .font-semibold {
+        font-weight: 600;
+      }
+      .font-bold {
+        font-weight: 700;
+      }
+
+      .mb-2 {
+        margin-bottom: var(--space-2);
+      }
+      .mb-4 {
+        margin-bottom: var(--space-4);
+      }
+      .mb-6 {
+        margin-bottom: var(--space-6);
+      }
+      .mb-8 {
+        margin-bottom: var(--space-8);
+      }
+
+      .mt-2 {
+        margin-top: var(--space-2);
+      }
+      .mt-4 {
+        margin-top: var(--space-4);
+      }
+      .mt-6 {
+        margin-top: var(--space-6);
+      }
+      .mt-8 {
+        margin-top: var(--space-8);
+      }
+
+      .p-4 {
+        padding: var(--space-4);
+      }
+      .p-6 {
+        padding: var(--space-6);
+      }
+      .p-8 {
+        padding: var(--space-8);
+      }
+
+      /* Status Indicators */
+      .status-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: var(--space-1);
+        padding: var(--space-1) var(--space-3);
+        border-radius: 9999px;
+        font-size: var(--text-xs);
+        font-weight: 500;
+      }
+
+      .status-badge::before {
+        content: "";
+        width: 0.5rem;
+        height: 0.5rem;
+        border-radius: 50%;
+      }
+
+      .status-online {
+        background: rgb(16 185 129 / 0.1);
+        color: #065f46;
+      }
+
+      .status-online::before {
+        background: var(--success-500);
+        animation: pulse-dot 2s infinite;
+      }
+
+      .status-offline {
+        background: rgb(239 68 68 / 0.1);
+        color: #991b1b;
+      }
+
+      .status-offline::before {
+        background: var(--error-500);
+      }
+
+      .status-pending {
+        background: rgb(245 158 11 / 0.1);
+        color: #92400e;
+      }
+
+      .status-pending::before {
+        background: var(--warning-500);
+      }
+
+      @keyframes pulse-dot {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.5;
+        }
+      }
+
+      /* Enhanced Modal Styles */
+      .modal {
+        position: fixed;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: var(--space-4);
+        z-index: 1000;
+        pointer-events: auto;
+      }
+
+      .modal.hidden {
+        display: none;
+        pointer-events: none;
+      }
+
+      .modal-backdrop {
+        position: fixed;
+        inset: 0;
+        background-color: rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(8px);
+        z-index: 1001;
+      }
+
+      .modal-content {
+        position: relative;
+        background: white;
+        border-radius: var(--radius-2xl);
+        box-shadow: var(--shadow-xl);
+        max-width: 32rem;
+        width: 100%;
+        max-height: 90vh;
+        overflow-y: auto;
+        z-index: 1002;
+        transform: scale(1);
+        transition: transform var(--transition-base), opacity var(--transition-base);
+        opacity: 1;
+      }
+
+      .modal.hidden .modal-content {
+        transform: scale(0.9) translateY(20px);
+        opacity: 0;
+      }
+
+      .modal__header {
+        padding: var(--space-4) var(--space-6);
+        background: linear-gradient(135deg, var(--primary-500), var(--primary-700));
+        color: white;
+        border-top-left-radius: var(--radius-2xl);
+        border-top-right-radius: var(--radius-2xl);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      .modal__title {
+        margin: 0;
+        font-size: var(--text-xl);
+        font-weight: var(--font-semibold);
+      }
+
+      .modal__close {
+        background: transparent;
+        border: none;
+        font-size: var(--text-lg);
+        color: white;
+        opacity: 0.8;
+        cursor: pointer;
+        padding: var(--space-2);
+        border-radius: var(--radius-md);
+        transition: all var(--transition-fast);
+      }
+
+      .modal__close:hover {
+        opacity: 1;
+        background: rgba(255, 255, 255, 0.1);
+      }
+
+      .modal__body {
+        padding: var(--space-6);
+      }
+
+      .modal__actions {
+        padding: var(--space-4) var(--space-6);
+        background: var(--neutral-50);
+        border-bottom-left-radius: var(--radius-2xl);
+        border-bottom-right-radius: var(--radius-2xl);
+        display: flex;
+        justify-content: flex-end;
+        gap: var(--space-3);
+      }
+
+      .modal__actions .btn {
+        min-width: 6rem;
+      }
+
+      .modal__actions .btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+
+      .form-input.textarea {
+        min-height: 100px;
+        resize: vertical;
+      }
+
+      .form-checkbox {
+        display: flex;
+        align-items: center;
+        gap: var(--space-2);
+        margin-bottom: var(--space-4);
+      }
+
+      .form-checkbox input {
+        width: var(--space-4);
+        height: var(--space-4);
+      }
+
+      .form-error {
+        color: var(--error-500);
+        font-size: var(--text-xs);
+        margin-top: var(--space-2);
+      }
+
+      /* Responsive Design */
+      @media (max-width: 1024px) {
+        .navbar-content,
+        .container {
+          padding: 0 var(--space-4);
+        }
+      }
+
+      @media (max-width: 768px) {
+        .navbar-nav {
+          display: none;
+        }
+
+        .user-menu {
+          margin-left: auto;
+          padding-left: 0;
+          border-left: none;
+        }
+
+        .card-body {
+          padding: var(--space-4);
+        }
+
+        .grid {
+          gap: var(--space-4);
+        }
+
+        .modal-content {
+          max-width: 90%;
+        }
+      }
+
+      /* Toast styles */
+      #toast-container {
+        position: fixed;
+        right: var(--space-4);
+        top: var(--space-4);
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-2);
+        z-index: 1200;
+        pointer-events: none;
+      }
+
+      .toast {
+        display: flex;
+        align-items: center;
+        gap: var(--space-3);
+        min-width: 240px;
+        max-width: 420px;
+        padding: var(--space-3) var(--space-4);
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow-md);
+        color: var(--neutral-900);
+        background: white;
+        border: 1px solid var(--neutral-200);
+        font-size: var(--text-sm);
+        pointer-events: auto;
+        transform: translateX(20px);
+        opacity: 0;
+        transition: transform var(--transition-base), opacity var(--transition-base);
+      }
+
+      .toast.toast--show {
+        transform: translateX(0);
+        opacity: 1;
+      }
+
+      .toast__icon {
+        display: inline-flex;
+        width: 1.5rem;
+        height: 1.5rem;
+        align-items: center;
+        justify-content: center;
+        border-radius: var(--radius-sm);
+        font-weight: 700;
+        flex-shrink: 0;
+      }
+
+      .toast__message {
+        flex: 1;
+        line-height: 1.2;
+      }
+
+      .toast__close {
+        background: transparent;
+        border: none;
+        font-size: var(--text-base);
+        opacity: 0.6;
+        cursor: pointer;
+      }
+
+      .toast__progress {
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        height: 3px;
+        background: var(--primary-500);
+        width: 100%;
+        transform-origin: left;
+        transition: transform linear;
+      }
+
+      .toast--success {
+        border-left: 4px solid var(--success-500);
+      }
+      .toast--error {
+        border-left: 4px solid var(--error-500);
+      }
+      .toast--warning {
+        border-left: 4px solid var(--warning-500);
+      }
+      .toast--info {
+        border-left: 4px solid var(--primary-500);
+      }
+    </style>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    {% block extra_css %}{% endblock %}
+  </head>
+  <body>
+    {% if user.is_authenticated %}
+    <nav class="navbar" role="navigation" aria-label="main navigation">
+      <div class="navbar-content">
+        <a href="{% url 'dashboard' %}" class="navbar-brand">
+          <div class="brand-icon" aria-hidden="true">P</div>
+          <span>Portail d'accès</span>
+        </a>
+
+        <div class="navbar-nav">
+          <a
+            href="{% url 'dashboard' %}"
+            class="nav-item {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}"
+            aria-current="{% if request.resolver_match.url_name == 'dashboard' %}page{% endif %}"
+          >
+            Tableau de bord
+          </a>
+          <a
+            href="{% url 'voice' %}"
+            class="nav-item {% if request.resolver_match.url_name == 'voice' %}active{% endif %}"
+            aria-current="{% if request.resolver_match.url_name == 'voice' %}page{% endif %}"
+          >
+            Commande
+          </a>
+          {% if user.is_staff %}
+          <a
+            href="{% url 'manage_voice' %}"
+            class="nav-item {% if request.resolver_match.url_name == 'manage_voice' %}active{% endif %}"
+            aria-current="{% if request.resolver_match.url_name == 'manage_voice' %}page{% endif %}"
+          >
+            Gestion voix
+          </a>
+          <a
+            href="{% url 'manage_pins' %}"
+            class="nav-item {% if request.resolver_match.url_name == 'manage_pins' %}active{% endif %}"
+            aria-current="{% if request.resolver_match.url_name == 'manage_pins' %}page{% endif %}"
+          >
+            Gestion PINs
+          </a>
+          {% endif %}
+        </div>
+
+        <div class="user-menu">
+          <span class="user-info">{{ user.username }}</span>
+          <a href="{% url 'logout' %}" class="btn btn-danger btn-sm">
+            Déconnexion
+          </a>
+        </div>
       </div>
-      <div id="modal-actions" class="mt-4 flex justify-end gap-2">
-  <button id="modal-cancel" class="btn" type="button">Annuler</button>
-  <button id="modal-confirm" class="btn btn-primary" type="button">Confirmer</button>
+    </nav>
+    {% endif %}
+
+    <main class="container mt-8" role="main">
+      {% block content %}{% endblock %}
+    </main>
+
+    <!-- Toast Notification Container -->
+    <div
+      id="toast-container"
+      class="fixed top-4 right-4 z-50 space-y-2"
+      role="alert"
+      aria-live="polite"
+    ></div>
+
+    <!-- Enhanced Global Modal -->
+    <div
+      id="global-modal"
+      class="modal hidden"
+      role="dialog"
+      aria-modal="true"
+      aria-hidden="true"
+    >
+      <div id="modal-backdrop" class="modal-backdrop"></div>
+      <div id="modal-content" class="modal-content" role="document">
+        <div id="modal-header" class="modal__header">
+          <h3 id="modal-title" class="modal__title"></h3>
+          <button id="modal-close" class="modal__close" aria-label="Fermer la fenêtre modale">
+            ✕
+          </button>
+        </div>
+        <div id="modal-body" class="modal__body"></div>
+        <div id="modal-actions" class="modal__actions"></div>
       </div>
     </div>
-  </div>
 
-  <script>
-    // Modal helpers: openModal(options), closeModal(), confirmModal(message, onConfirm), showFormModal(opts)
-    (function(){
-      const modal = document.getElementById('global-modal');
-      const body = document.getElementById('modal-body');
-      const actions = document.getElementById('modal-actions');
-      const btnCancel = document.getElementById('modal-cancel');
-      const btnConfirm = document.getElementById('modal-confirm');
-      let currentConfirm = null;
+    <script>
+      // Toast Notifications
+      function showToast(message, type = "info", duration = 4000) {
+        const container = document.getElementById("toast-container");
+        if (!container) return console.warn("No toast container present");
 
-  function openModal({ html = '', showConfirm = true, confirmText = 'Confirmer', cancelText = 'Annuler', onConfirm = null } = {}){
-        if (!modal) return;
-        body.innerHTML = html;
-        btnConfirm.textContent = confirmText;
-        btnCancel.textContent = cancelText;
-        btnConfirm.style.display = showConfirm ? '' : 'none';
-        currentConfirm = onConfirm;
-        modal.classList.remove('hidden');
-        // small focus trap
-        const focusable = modal.querySelector('button, input, textarea, select');
-        if (focusable) focusable.focus();
-      }
+        const toast = document.createElement("div");
+        toast.className = `toast toast--${type}`;
+        toast.setAttribute("role", "status");
+        toast.setAttribute("aria-live", "polite");
+        toast.setAttribute("tabindex", "0");
 
-      function closeModal(){
-        if (!modal) return;
-        modal.classList.add('hidden');
-        body.innerHTML = '';
-        currentConfirm = null;
-      }
+        const icons = {
+          success: "✓",
+          error: "✕",
+          warning: "⚠",
+          info: "ℹ",
+        };
 
-      btnCancel && btnCancel.addEventListener('click', (e) => { e.preventDefault(); closeModal(); });
-      btnConfirm && btnConfirm.addEventListener('click', async (e) => {
-        e.preventDefault();
-        if (typeof currentConfirm === 'function') {
-          try {
-            await currentConfirm();
-          } catch (err) {
-            console.error(err);
+        toast.innerHTML = `
+          <div class="toast__icon" aria-hidden="true">${icons[type] || icons.info}</div>
+          <div class="toast__message">${String(message).replace(/</g, "&lt;").replace(/>/g, "&gt;")}</div>
+          <button class="toast__close" aria-label="Fermer la notification">✕</button>
+          <div class="toast__progress" aria-hidden="true"></div>
+        `;
+
+        container.appendChild(toast);
+        requestAnimationFrame(() => toast.classList.add("toast--show"));
+
+        const closeBtn = toast.querySelector(".toast__close");
+        const progress = toast.querySelector(".toast__progress");
+
+        let start = performance.now();
+        const step = (now) => {
+          const elapsed = now - start;
+          const pct = Math.max(0, 1 - elapsed / duration);
+          progress.style.transform = `scaleX(${pct})`;
+          if (pct > 0) {
+            toast._raf = requestAnimationFrame(step);
           }
-        }
-        closeModal();
-      });
+        };
 
-      // convenience wrappers
-      window.confirmModal = function(message, onConfirm){
-        const html = `<h3 id="modal-title" class="text-lg font-semibold mb-2">Confirmer</h3><div class="text-sm text-gray-700">${message}</div>`;
-        openModal({ html, showConfirm: true, confirmText: 'Oui', cancelText: 'Non', onConfirm });
+        toast._raf = requestAnimationFrame(step);
+
+        function removeToast() {
+          cancelAnimationFrame(toast._raf);
+          toast.classList.remove("toast--show");
+          toast.style.transition = "opacity 180ms ease, transform 180ms ease";
+          setTimeout(() => toast.remove(), 220);
+        }
+
+        closeBtn.addEventListener("click", removeToast);
+        toast.addEventListener("keydown", (e) => {
+          if (e.key === "Escape") removeToast();
+        });
+
+        setTimeout(removeToast, duration);
       }
 
-  window.showFormModal = function({ title = 'Formulaire', fields = [], submitText = 'Enregistrer', onSubmit = null } = {}){
-        let fieldsHtml = '';
-        fields.forEach(f => {
-          const val = f.value !== undefined && f.value !== null ? String(f.value).replace(/</g, '&lt;') : '';
-          if (f.type === 'select') {
-            // expect f.options as array of {value,label} or strings
-            let optionsHtml = '';
-            (f.options || []).forEach(opt => {
-              if (typeof opt === 'string') {
-                const selected = opt === val ? 'selected' : '';
-                optionsHtml += `<option value="${opt}" ${selected}>${opt}</option>`;
-              } else {
-                const ov = String(opt.value).replace(/</g, '&lt;');
-                const ol = String(opt.label || opt.value).replace(/</g, '&lt;');
-                const selected = String(opt.value) === String(val) ? 'selected' : '';
-                optionsHtml += `<option value="${ov}" ${selected}>${ol}</option>`;
-              }
-            });
-            fieldsHtml += `<div class="mb-3"><label class="block font-medium mb-1">${f.label}</label><select id="modal-field-${f.name}" class="form-input w-full">${optionsHtml}</select></div>`;
-          } else {
-            fieldsHtml += `<div class="mb-3"><label class="block font-medium mb-1">${f.label}</label><input id="modal-field-${f.name}" class="form-input w-full" type="${f.type||'text'}" value="${val}" /></div>`;
+      // Legacy compatibility
+      function showMessage(message, type) {
+        showToast(message, type);
+      }
+
+      // Enhanced Modal System
+      (function () {
+        const modal = document.getElementById("global-modal");
+        const backdrop = document.getElementById("modal-backdrop");
+        const content = document.getElementById("modal-content");
+        const body = document.getElementById("modal-body");
+        const actions = document.getElementById("modal-actions");
+        const closeBtn = document.getElementById("modal-close");
+
+        let currentResolve = null;
+        let isSubmitting = false;
+
+        function openModal(options = {}) {
+          const {
+            title = "Confirmation",
+            message = "",
+            html = "",
+            showCancel = true,
+            cancelText = "Annuler",
+            confirmText = "Confirmer",
+            confirmClass = "btn-primary",
+            onClose = () => {},
+          } = options;
+
+          const contentHtml =
+            html ||
+            `
+              <h3 class="text-xl font-semibold mb-4 text-neutral-900">${title.replace(/</g, "&lt;")}</h3>
+              <div class="text-neutral-600">${message.replace(/</g, "&lt;")}</div>
+            `;
+
+          document.getElementById("modal-title").textContent = title;
+          body.innerHTML = contentHtml;
+          actions.innerHTML = `
+            ${showCancel ? `<button id="modal-cancel" class="btn btn-secondary">${cancelText}</button>` : ""}
+            <button id="modal-confirm" class="btn ${confirmClass}">${confirmText}</button>
+          `;
+
+          modal.classList.remove("hidden");
+          modal.setAttribute("aria-hidden", "false");
+          modal._previousActive = document.activeElement;
+
+          setTimeout(() => {
+            const focusable = modal.querySelector(
+              'button:not([disabled]), [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+            );
+            if (focusable) focusable.focus();
+            else content.focus();
+          }, 100);
+
+          content.style.transform = "scale(0.9) translateY(20px)";
+          content.style.opacity = "0";
+          requestAnimationFrame(() => {
+            content.style.transform = "scale(1) translateY(0)";
+            content.style.opacity = "1";
+          });
+
+          const cancelBtn = document.getElementById("modal-cancel");
+          const confirmBtn = document.getElementById("modal-confirm");
+
+          return new Promise((resolve) => {
+            const closeHandler = (result) => {
+              if (isSubmitting) return;
+              content.style.transform = "scale(0.9) translateY(20px)";
+              content.style.opacity = "0";
+              setTimeout(() => {
+                modal.classList.add("hidden");
+                modal.setAttribute("aria-hidden", "true");
+                if (modal._previousActive) modal._previousActive.focus();
+                resolve(result);
+                onClose(result);
+              }, 200);
+            };
+
+            if (cancelBtn) cancelBtn.addEventListener("click", () => closeHandler(false));
+            confirmBtn.addEventListener("click", () => closeHandler(true));
+            currentResolve = resolve;
+          });
+        }
+
+        backdrop.addEventListener("click", () => {
+          if (!isSubmitting) closeModal(false);
+        });
+
+        closeBtn.addEventListener("click", () => {
+          if (!isSubmitting) closeModal(false);
+        });
+
+        document.addEventListener("keydown", (e) => {
+          if (e.key === "Escape" && !modal.classList.contains("hidden") && !isSubmitting) {
+            closeModal(false);
           }
         });
-        const html = `<h3 class="text-lg font-semibold mb-2">${title}</h3><div>${fieldsHtml}</div>`;
-  openModal({ html, showConfirm: true, confirmText: submitText, cancelText: 'Annuler', onConfirm: async () => {
-          const data = {};
-          fields.forEach(f => { const el = document.getElementById('modal-field-'+f.name); data[f.name] = el ? el.value : ''; });
-          if (typeof onSubmit === 'function') await onSubmit(data);
-        }});
+
+        modal.addEventListener("keydown", (e) => {
+          if (e.key !== "Tab") return;
+          const focusable = Array.from(
+            modal.querySelectorAll(
+              'button:not([disabled]), [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+            )
+          ).filter((el) => !el.disabled && el.offsetParent !== null);
+          if (!focusable.length) return;
+          const first = focusable[0];
+          const last = focusable[focusable.length - 1];
+          if (e.shiftKey && document.activeElement === first) {
+            e.preventDefault();
+            last.focus();
+          } else if (!e.shiftKey && document.activeElement === last) {
+            e.preventDefault();
+            first.focus();
+          }
+        });
+
+        function closeModal(result = false) {
+          if (currentResolve) {
+            currentResolve(result);
+            currentResolve = null;
+          }
+        }
+
+        window.confirmModal = function (message, callback) {
+          openModal({
+            title: "Confirmer l'action",
+            message,
+            confirmText: "Oui",
+            cancelText: "Non",
+            confirmClass: "btn-danger",
+          }).then((result) => {
+            if (result && typeof callback === "function") {
+              callback();
+            }
+          });
+        };
+
+        window.showFormModal = function (options) {
+          const {
+            title,
+            fields = [],
+            submitText = "Enregistrer",
+            onSubmit = () => {},
+            validate = () => ({ isValid: true }),
+          } = options;
+
+          let fieldsHtml = "";
+          fields.forEach((field) => {
+            const value = String(field.value || "").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+            const id = `modal-field-${field.name}`;
+            const descId = `${field.name}-desc`;
+
+            if (field.type === "select") {
+              let optionsHtml = (field.options || []).map((opt) => {
+                const optValue = typeof opt === "string" ? opt : opt.value;
+                const optLabel = typeof opt === "string" ? opt : opt.label;
+                const selected = String(optValue) === String(value) ? "selected" : "";
+                return `<option value="${optValue.replace(/</g, "&lt;")}" ${selected}>${optLabel.replace(/</g, "&lt;")}</option>`;
+              }).join("");
+              fieldsHtml += `
+                <div class="form-group">
+                  <label class="form-label" for="${id}">${field.label.replace(/</g, "&lt;")}</label>
+                  <select id="${id}" class="form-input" aria-describedby="${descId}">${optionsHtml}</select>
+                  <div id="${descId}" class="form-error" style="display: none;"></div>
+                </div>
+              `;
+            } else if (field.type === "textarea") {
+              fieldsHtml += `
+                <div class="form-group">
+                  <label class="form-label" for="${id}">${field.label.replace(/</g, "&lt;")}</label>
+                  <textarea id="${id}" class="form-input textarea" aria-describedby="${descId}" ${field.placeholder ? `placeholder="${field.placeholder.replace(/</g, "&lt;")}"` : ""}>${value}</textarea>
+                  <div id="${descId}" class="form-error" style="display: none;"></div>
+                </div>
+              `;
+            } else if (field.type === "checkbox") {
+              fieldsHtml += `
+                <div class="form-checkbox">
+                  <input id="${id}" type="checkbox" ${value === "true" ? "checked" : ""} aria-describedby="${descId}"/>
+                  <label for="${id}">${field.label.replace(/</g, "&lt;")}</label>
+                  <div id="${descId}" class="form-error" style="display: none;"></div>
+                </div>
+              `;
+            } else {
+              fieldsHtml += `
+                <div class="form-group">
+                  <label class="form-label" for="${id}">${field.label.replace(/</g, "&lt;")}</label>
+                  <input id="${id}" class="form-input" type="${field.type || "text"}" value="${value}" ${field.placeholder ? `placeholder="${field.placeholder.replace(/</g, "&lt;")}"` : ""} aria-describedby="${descId}"/>
+                  <div id="${descId}" class="form-error" style="display: none;"></div>
+                </div>
+              `;
+            }
+          });
+
+          const html = `
+            <div class="space-y-6">${fieldsHtml}</div>
+          `;
+
+          openModal({
+            html,
+            confirmText: submitText,
+            confirmClass: "btn-primary",
+            onClose: (result) => {
+              isSubmitting = false;
+            },
+          }).then(async (result) => {
+            if (!result) return;
+            const data = {};
+            const errors = {};
+
+            fields.forEach((field) => {
+              const el = document.getElementById(`modal-field-${field.name}`);
+              data[field.name] = field.type === "checkbox" ? el.checked : el.value;
+            });
+
+            const validation = validate(data);
+            if (!validation.isValid) {
+              Object.entries(validation.errors || {}).forEach(([name, error]) => {
+                const errorEl = document.getElementById(`${name}-desc`);
+                if (errorEl) {
+                  errorEl.textContent = error;
+                  errorEl.style.display = "block";
+                }
+                errors[name] = error;
+              });
+              return;
+            }
+
+            isSubmitting = true;
+            const confirmBtn = document.getElementById("modal-confirm");
+            confirmBtn.disabled = true;
+            confirmBtn.textContent = "Chargement...";
+
+            try {
+              await onSubmit(data);
+              closeModal(true);
+            } catch (error) {
+              showToast("Erreur lors de l'envoi du formulaire", "error");
+              console.error("Form submission error:", error);
+            } finally {
+              isSubmitting = false;
+              confirmBtn.disabled = false;
+              confirmBtn.textContent = submitText;
+            }
+          });
+        };
+      })();
+
+      // CSRF Token Helper
+      function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== "") {
+          const cookies = document.cookie.split(";");
+          for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.startsWith(name + "=")) {
+              cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+              break;
+            }
+          }
+        }
+        return cookieValue;
       }
-    })();
-  </script>
-  
-  {% block scripts %}{% endblock %}
-</body>
+
+      // Smooth scrolling for anchor links
+      document.addEventListener("DOMContentLoaded", () => {
+        document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+          anchor.addEventListener("click", (e) => {
+            e.preventDefault();
+            const target = document.querySelector(anchor.getAttribute("href"));
+            if (target) {
+              target.scrollIntoView({ behavior: "smooth", block: "start" });
+            }
+          });
+        });
+      });
+    </script>
+
+    {% block scripts %}{% endblock %}
+  </body>
 </html>

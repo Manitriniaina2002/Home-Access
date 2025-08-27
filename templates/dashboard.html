@@ -1,66 +1,68 @@
-{% extends 'base.html' %}
-
-{% block title %}Tableau de bord{% endblock %}
-
+{% extends 'base.html' %} 
+{% block title %}Tableau de bord{% endblock %} 
 {% block extra_css %}
 <style>
   .dashboard-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 2rem;
-    margin-bottom: 2rem;
+    gap: var(--space-6);
+    margin-bottom: var(--space-8);
   }
 
+  /* Card appearance and spacing */
   .dashboard-card {
+    border-radius: var(--radius-xl);
+    transition: transform var(--transition-fast),
+      box-shadow var(--transition-fast);
     background: white;
-    border-radius: 12px;
-    padding: 2rem;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.8);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    border: 1px solid var(--neutral-100);
+    padding: var(--space-6);
   }
 
   .dashboard-card:hover {
     transform: translateY(-2px);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+    box-shadow: var(--shadow-lg);
   }
 
+  /* Card header layout */
   .card-header {
     display: flex;
+    gap: var(--space-4);
     align-items: center;
-    gap: 1rem;
-    margin-bottom: 1.5rem;
+    margin-bottom: var(--space-4);
   }
 
   .card-icon {
-    font-size: 2rem;
-    padding: 0.5rem;
-    border-radius: 12px;
+    font-size: var(--text-2xl);
+    padding: var(--space-2);
+    border-radius: var(--radius-lg);
     background: linear-gradient(135deg, #667eea, #764ba2);
     color: white;
     display: flex;
     align-items: center;
     justify-content: center;
+    width: 3rem;
+    height: 3rem;
   }
 
   .card-title {
-    font-size: 1.25rem;
-    font-weight: 600;
-    color: #2c3e50;
+    font-size: var(--text-xl);
+    font-weight: var(--font-semibold);
+    color: var(--neutral-900);
     margin: 0;
   }
 
   .card-subtitle {
-    color: #64748b;
-    font-size: 0.9rem;
+    color: var(--neutral-500);
+    font-size: var(--text-sm);
   }
 
   .stat-item {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 0.75rem 0;
-    border-bottom: 1px solid #f1f5f9;
+    padding: var(--space-3) 0;
+    border-bottom: 1px solid var(--neutral-100);
   }
 
   .stat-item:last-child {
@@ -68,76 +70,54 @@
   }
 
   .stat-label {
-    color: #64748b;
-    font-size: 0.9rem;
+    color: var(--neutral-500);
+    font-size: var(--text-sm);
   }
 
   .stat-value {
-    font-weight: 600;
-    color: #2c3e50;
-  }
-
-  .status-badge {
-    padding: 0.25rem 0.75rem;
-    border-radius: 20px;
-    font-size: 0.8rem;
-    font-weight: 500;
-  }
-
-  .status-online {
-    background: #dcfce7;
-    color: #166534;
-  }
-
-  .status-offline {
-    background: #fef2f2;
-    color: #dc2626;
-  }
-
-  .status-pending {
-    background: #fef3c7;
-    color: #92400e;
+    font-weight: var(--font-semibold);
+    color: var(--neutral-900);
   }
 
   .quick-actions {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 1rem;
-    margin-top: 1.5rem;
+    gap: var(--space-4);
+    margin-top: var(--space-6);
   }
 
   .action-btn {
-    padding: 0.75rem;
-    background: #f8fafc;
-    border: 1px solid #e2e8f0;
-    border-radius: 8px;
+    padding: var(--space-3);
+    background: var(--neutral-50);
+    border: 1px solid var(--neutral-200);
+    border-radius: var(--radius-md);
     cursor: pointer;
     text-align: center;
-    font-size: 0.9rem;
-    font-weight: 500;
-    color: #475569;
-    transition: all 0.2s ease;
+    font-size: var(--text-sm);
+    font-weight: var(--font-medium);
+    color: var(--neutral-600);
+    transition: all var(--transition-fast);
   }
 
   .action-btn:hover {
-    background: #f1f5f9;
-    border-color: #667eea;
-    color: #667eea;
+    background: var(--neutral-100);
+    border-color: var(--primary-500);
+    color: var(--primary-600);
   }
 
   .welcome-section {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #667eea, #764ba2);
     color: white;
-    border-radius: 16px;
-    padding: 3rem 2rem;
-    margin-bottom: 3rem;
+    border-radius: var(--radius-2xl);
+    padding: var(--space-8) var(--space-6);
+    margin-bottom: var(--space-8);
     text-align: center;
     position: relative;
     overflow: hidden;
   }
 
   .welcome-section::before {
-    content: '';
+    content: "";
     position: absolute;
     top: -50%;
     left: -50%;
@@ -147,15 +127,19 @@
       45deg,
       transparent,
       transparent 10px,
-      rgba(255,255,255,0.05) 10px,
-      rgba(255,255,255,0.05) 20px
+      rgba(255, 255, 255, 0.05) 10px,
+      rgba(255, 255, 255, 0.05) 20px
     );
     animation: slide 20s linear infinite;
   }
 
   @keyframes slide {
-    0% { transform: translate(-50%, -50%); }
-    100% { transform: translate(-40%, -40%); }
+    0% {
+      transform: translate(-50%, -50%);
+    }
+    100% {
+      transform: translate(-40%, -40%);
+    }
   }
 
   .welcome-content {
@@ -164,133 +148,193 @@
   }
 
   .welcome-title {
-    font-size: 2rem;
-    font-weight: 700;
-    margin-bottom: 0.5rem;
+    font-size: var(--text-3xl);
+    font-weight: var(--font-bold);
+    margin-bottom: var(--space-2);
   }
 
   .welcome-subtitle {
-    font-size: 1.1rem;
+    font-size: var(--text-lg);
     opacity: 0.9;
-    margin-bottom: 1.5rem;
+    margin-bottom: var(--space-6);
   }
 
   .system-time {
-    font-size: 0.9rem;
+    font-size: var(--text-sm);
     opacity: 0.8;
   }
 
   .device-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    gap: 1rem;
+    gap: var(--space-4);
   }
 
   .device-item {
     display: flex;
     align-items: center;
-    gap: 1rem;
-    padding: 1rem;
-    background: #f8fafc;
-    border: 1px solid #e5e7eb;
-    border-radius: 8px;
-    transition: all 0.2s ease;
+    gap: var(--space-4);
+    padding: var(--space-4);
+    background: var(--neutral-50);
+    border: 1px solid var(--neutral-200);
+    border-radius: var(--radius-md);
+    transition: all var(--transition-fast);
   }
 
   .device-item:hover {
-    background: #f1f5f9;
-    border-color: #3b82f6;
+    background: var(--neutral-100);
+    border-color: var(--primary-500);
   }
 
   .device-icon {
-    font-size: 1.5rem;
+    font-size: var(--text-xl);
     width: 40px;
     text-align: center;
   }
 
-  .device-details {
-    flex: 1;
-  }
-
   .device-name {
-    font-weight: 500;
-    color: #374151;
-    margin-bottom: 0.25rem;
+    font-weight: var(--font-medium);
+    color: var(--neutral-700);
+    margin-bottom: var(--space-1);
   }
 
   .device-status {
-    font-size: 0.8rem;
-    color: #6b7280;
+    font-size: var(--text-xs);
+    color: var(--neutral-500);
   }
 
   @media (max-width: 768px) {
     .dashboard-grid {
       grid-template-columns: 1fr;
     }
-    
+
     .quick-actions {
       grid-template-columns: 1fr;
     }
-    
+
     .welcome-section {
-      padding: 2rem 1rem;
+      padding: var(--space-6) var(--space-4);
     }
-    
+
     .welcome-title {
-      font-size: 1.5rem;
+      font-size: var(--text-2xl);
+    }
+  }
+
+  /* MQTT log table improvements */
+  #mqtt-log-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: var(--text-sm);
+  }
+
+  #mqtt-log-table thead th {
+    text-align: left;
+    padding: 0.5rem 0.75rem;
+    font-weight: 600;
+    color: var(--neutral-700);
+    border-bottom: 1px solid var(--neutral-100);
+    background: transparent;
+  }
+
+  #mqtt-log-table tbody td {
+    padding: 0.5rem 0.75rem;
+    border-bottom: 1px solid var(--neutral-100);
+    vertical-align: top;
+  }
+
+  #mqtt-log-table tbody tr:hover {
+    background: rgba(14, 165, 233, 0.04);
+  }
+
+  .mqtt-payload {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono",
+      "Courier New", monospace;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 36ch;
+    display: inline-block;
+    vertical-align: middle;
+  }
+
+  /* Make quick actions stack on narrow screens */
+  @media (max-width: 480px) {
+    .quick-actions {
+      grid-template-columns: 1fr;
     }
   }
 </style>
-{% endblock %}
-
-{% block content %}
+{% endblock %} {% block content %}
 <div class="welcome-section">
   <div class="welcome-content">
     <h1 class="welcome-title">Bienvenue, {{ user.username }} !</h1>
     <p class="welcome-subtitle">Vue d'ensemble de votre espace</p>
-    <div class="system-time" id="current-time"></div>
+    <div class="system-time" id="current-time" aria-live="polite"></div>
   </div>
 </div>
 
 <div class="dashboard-grid">
-  <!-- System Status Card -->
-  <div class="dashboard-card">
+  <div
+    class="dashboard-card"
+    role="region"
+    aria-labelledby="system-status-title"
+  >
     <div class="card-header">
-      <div class="card-icon">⚡</div>
+      <div class="card-icon" aria-hidden="true">⚡</div>
       <div>
-        <h2 class="card-title">État du Système</h2>
+        <h2 class="card-title" id="system-status-title">État du Système</h2>
         <p class="card-subtitle">Statut des services</p>
       </div>
     </div>
-    
+
     <div class="stat-item">
       <span class="stat-label">Services</span>
-      <span class="status-badge status-online">En ligne</span>
+      <span class="status-badge status-online" aria-label="Services en ligne"
+        >En ligne</span
+      >
     </div>
     <div class="stat-item">
       <span class="stat-label">Connectivité</span>
-      <span class="status-badge status-online" id="mqtt-status">Active</span>
+      <span
+        class="status-badge status-online"
+        id="mqtt-status"
+        aria-label="Connectivité active"
+        >Active</span
+      >
     </div>
     <div class="stat-item">
       <span class="stat-label">Base de données</span>
-      <span class="status-badge status-online">Opérationnelle</span>
+      <span
+        class="status-badge status-online"
+        aria-label="Base de données opérationnelle"
+        >Opérationnelle</span
+      >
     </div>
     <div class="stat-item">
       <span class="stat-label">Reconnaissance vocale</span>
-      <span class="status-badge" id="speech-status">Disponible</span>
+      <span
+        class="status-badge"
+        id="speech-status"
+        aria-label="Reconnaissance vocale disponible"
+        >Disponible</span
+      >
     </div>
   </div>
 
-  <!-- Voice Commands Card -->
-  <div class="dashboard-card">
+  <div
+    class="dashboard-card"
+    role="region"
+    aria-labelledby="voice-commands-title"
+  >
     <div class="card-header">
-      <div class="card-icon">🎤</div>
+      <div class="card-icon" aria-hidden="true">🎤</div>
       <div>
-        <h2 class="card-title">Commandes Vocales</h2>
+        <h2 class="card-title" id="voice-commands-title">Commandes Vocales</h2>
         <p class="card-subtitle">Statistiques d'utilisation</p>
       </div>
     </div>
-    
+
     <div class="stat-item">
       <span class="stat-label">Commandes aujourd'hui</span>
       <span class="stat-value" id="commands-today">0</span>
@@ -303,278 +347,495 @@
       <span class="stat-label">Dernière commande</span>
       <span class="stat-value" id="last-command">Aucune</span>
     </div>
-    
+
     <div class="quick-actions">
-      <a href="{% url 'voice' %}" class="action-btn">
-        🎙️ Contrôle vocal
-      </a>
-      <div class="action-btn" onclick="testVoiceRecognition()">
+      <a href="{% url 'voice' %}" class="action-btn"> 🎙️ Contrôle vocal </a>
+      <button
+        class="action-btn"
+        onclick="testVoiceRecognition()"
+        aria-label="Tester le microphone"
+      >
         🔧 Tester micro
-      </div>
+      </button>
     </div>
   </div>
 
-  <!-- Connected Devices Card -->
-  <div class="dashboard-card">
+  <div
+    class="dashboard-card"
+    role="region"
+    aria-labelledby="connected-devices-title"
+  >
     <div class="card-header">
-      <div class="card-icon">🏠</div>
+      <div class="card-icon" aria-hidden="true">🏠</div>
       <div>
-        <h2 class="card-title">Appareils Connectés</h2>
+        <h2 class="card-title" id="connected-devices-title">
+          Appareils Connectés
+        </h2>
         <p class="card-subtitle">Dispositifs MQTT</p>
       </div>
     </div>
-    
+
     <div class="device-grid">
       <div class="device-item">
-        <div class="device-icon">🚪</div>
+        <div class="device-icon" aria-hidden="true">🚪</div>
         <div class="device-details">
           <div class="device-name">Porte d'entrée</div>
           <div class="device-status">home_acces/door</div>
         </div>
       </div>
-      
+
       <div class="device-item">
-        <div class="device-icon">💡</div>
+        <div class="device-icon" aria-hidden="true">💡</div>
         <div class="device-details">
           <div class="device-name">Éclairage</div>
           <div class="device-status">home_acces/lights</div>
         </div>
       </div>
-      
+
       <div class="device-item">
-        <div class="device-icon">🔒</div>
+        <div class="device-icon" aria-hidden="true">🔒</div>
         <div class="device-details">
           <div class="device-name">Sécurité</div>
           <div class="device-status">home_acces/security</div>
         </div>
       </div>
     </div>
-    
+
     <div class="quick-actions">
-      <div class="action-btn" onclick="refreshDevices()">
+      <button
+        class="action-btn"
+        onclick="refreshDevices()"
+        aria-label="Actualiser les appareils"
+      >
         🔄 Actualiser
-      </div>
-      <div class="action-btn" onclick="showMqttLogs()">
-        📊 Logs MQTT
-      </div>
+      </button>
+      <button
+        class="action-btn"
+        onclick="scrollToMqttLog()"
+        aria-label="Voir les logs MQTT"
+      >
+        📜 Logs MQTT
+      </button>
     </div>
   </div>
 
-  <!-- Recent Activity Card -->
-  <div class="dashboard-card">
+  <div
+    class="dashboard-card"
+    id="mqtt-log-section"
+    role="region"
+    aria-labelledby="mqtt-log-title"
+  >
     <div class="card-header">
-      <div class="card-icon">📋</div>
+      <div class="card-icon" aria-hidden="true">📜</div>
       <div>
-        <h2 class="card-title">Activité Récente</h2>
+        <h2 class="card-title" id="mqtt-log-title">Logs MQTT (porte)</h2>
+        <p class="card-subtitle">Derniers événements reçus</p>
+      </div>
+    </div>
+    <div style="overflow-x: auto">
+      <table
+        class="min-w-full text-sm"
+        id="mqtt-log-table"
+        aria-describedby="mqtt-log-title"
+      >
+        <thead>
+          <tr>
+            <th scope="col" class="px-2 py-1">Horodatage</th>
+            <th scope="col" class="px-2 py-1">Statut</th>
+            <th scope="col" class="px-2 py-1">Payload</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td colspan="3" style="text-align: center">Chargement...</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="quick-actions">
+      <button
+        class="action-btn"
+        onclick="refreshMqttLog()"
+        aria-label="Rafraîchir les logs MQTT"
+      >
+        🔄 Rafraîchir
+      </button>
+    </div>
+  </div>
+
+  <div
+    class="dashboard-card"
+    role="region"
+    aria-labelledby="recent-activity-title"
+  >
+    <div class="card-header">
+      <div class="card-icon" aria-hidden="true">📋</div>
+      <div>
+        <h2 class="card-title" id="recent-activity-title">Activité Récente</h2>
         <p class="card-subtitle">Dernières actions</p>
       </div>
     </div>
-    
+
     <div id="recent-activity">
       <div class="stat-item">
         <span class="stat-label">Système démarré</span>
         <span class="stat-value" id="startup-time"></span>
       </div>
     </div>
-    
+
     <div class="quick-actions">
-      <div class="action-btn" onclick="clearActivityLog()">
+      <button
+        class="action-btn"
+        onclick="clearActivityLog()"
+        aria-label="Vider les logs d'activité"
+      >
         🗑️ Vider logs
-      </div>
-      <div class="action-btn" onclick="exportLogs()">
+      </button>
+      <button
+        class="action-btn"
+        onclick="exportLogs()"
+        aria-label="Exporter les logs"
+      >
         📤 Exporter
-      </div>
+      </button>
     </div>
   </div>
 </div>
 
-<!-- Admin Quick Actions -->
 {% if user.is_staff %}
-<div class="card">
-  <h2 style="margin-bottom: 1rem; color: #2c3e50;">⚙️ Administration</h2>
-  <div class="quick-actions" style="grid-template-columns: repeat(3, 1fr);">
-    <a href="/admin/" class="action-btn" target="_blank">
-      🔧 Django Admin
-    </a>
-    <div class="action-btn" onclick="manageVoiceCommands()">
+<div class="card" role="region" aria-labelledby="admin-actions-title">
+  <h2
+    id="admin-actions-title"
+    class="text-lg font-semibold mb-4 text-neutral-900"
+  >
+    ⚙️ Administration
+  </h2>
+  <div class="quick-actions" style="grid-template-columns: repeat(3, 1fr)">
+    <a href="/admin/" class="action-btn" target="_blank"> 🔧 Django Admin </a>
+    <button
+      class="action-btn"
+      onclick="manageVoiceCommands()"
+      aria-label="Gérer les commandes vocales"
+    >
       🎤 Gérer commandes
-    </div>
-    <div class="action-btn" onclick="viewSystemLogs()">
+    </button>
+    <button
+      class="action-btn"
+      onclick="viewSystemLogs()"
+      aria-label="Voir les logs système"
+    >
       📊 Logs système
-    </div>
+    </button>
   </div>
 </div>
-{% endif %}
-{% endblock %}
-
-{% block scripts %}
+{% endif %} {% endblock %} {% block scripts %}
 <script>
   let activityCount = 0;
+  let lastEventTimestamps = [];
+  let ws;
 
-  // Update current time
-  function updateTime() {
-    const now = new Date();
-    document.getElementById('current-time').textContent = 
-      `Dernière mise à jour: ${now.toLocaleString('fr-FR')}`;
+  function scrollToMqttLog() {
+    const section = document.getElementById("mqtt-log-section");
+    if (section) section.scrollIntoView({ behavior: "smooth" });
   }
 
-  // Check speech recognition support
+  function renderMqttLog(events, highlightNew = true) {
+    const tbody = document.querySelector("#mqtt-log-table tbody");
+    if (!tbody) return;
+    tbody.innerHTML = "";
+    if (!events.length) {
+      tbody.innerHTML =
+        '<tr><td colspan="3" style="text-align:center;">Aucun événement</td></tr>';
+      lastEventTimestamps = [];
+      return;
+    }
+    const newTimestamps = events.map((e) => e.timestamp);
+    for (const e of events) {
+      const row = document.createElement("tr");
+      const isNew =
+        highlightNew &&
+        lastEventTimestamps.length &&
+        !lastEventTimestamps.includes(e.timestamp);
+      const timestamp = String(e.timestamp)
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;");
+      const status = String(e.status)
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;");
+      const payload = String(e.payload || "")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;");
+      row.innerHTML = `<td class="px-2 py-1">${timestamp}</td><td class="px-2 py-1">${status}</td><td class="px-2 py-1"><span class="mqtt-payload">${payload}</span></td>`;
+      if (isNew) row.style.background = "#d1fae5";
+      tbody.appendChild(row);
+    }
+    lastEventTimestamps = newTimestamps;
+  }
+
+  function connectMqttLogWebSocket() {
+    let protocol = window.location.protocol === "https:" ? "wss" : "ws";
+    let wsUrl = `${protocol}://${window.location.host}/ws/door_events/`;
+    ws = new WebSocket(wsUrl);
+    ws.onopen = () => {
+      showToast("Connexion WebSocket MQTT établie", "success");
+    };
+    ws.onmessage = (event) => {
+      try {
+        const data = JSON.parse(event.data);
+        if (data.events) {
+          if (data.events.length === 1 && lastEventTimestamps.length) {
+            const current = Array.from(
+              document.querySelectorAll("#mqtt-log-table tbody tr")
+            ).map((tr) => ({
+              timestamp: tr.children[0].textContent,
+              status: tr.children[1].textContent,
+              payload: tr.children[2].textContent,
+            }));
+            renderMqttLog([data.events[0], ...current].slice(0, 20));
+          } else {
+            renderMqttLog(data.events);
+          }
+        }
+      } catch (e) {
+        console.error("WebSocket message error:", e);
+      }
+    };
+    ws.onclose = () => {
+      showToast("WebSocket MQTT déconnecté, reconnexion dans 3s", "warning");
+      setTimeout(connectMqttLogWebSocket, 3000);
+    };
+  }
+
+  function refreshMqttLog() {
+    showToast("Logs MQTT en temps réel", "info");
+  }
+
+  function updateTime() {
+    const now = new Date();
+    document.getElementById(
+      "current-time"
+    ).textContent = `Dernière mise à jour: ${now.toLocaleString("fr-FR")}`;
+  }
+
   function checkSpeechRecognition() {
-    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-    const statusElement = document.getElementById('speech-status');
-    
+    const SpeechRecognition =
+      window.SpeechRecognition || window.webkitSpeechRecognition;
+    const statusElement = document.getElementById("speech-status");
+
     if (SpeechRecognition) {
-      statusElement.textContent = 'Disponible';
-      statusElement.className = 'status-badge status-online';
+      statusElement.textContent = "Disponible";
+      statusElement.className = "status-badge status-online";
     } else {
-      statusElement.textContent = 'Non supporté';
-      statusElement.className = 'status-badge status-offline';
+      statusElement.textContent = "Non supporté";
+      statusElement.className = "status-badge status-offline";
     }
   }
 
-  // Test voice recognition
   function testVoiceRecognition() {
-    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-    
+    const SpeechRecognition =
+      window.SpeechRecognition || window.webkitSpeechRecognition;
+
     if (!SpeechRecognition) {
-      showMessage('Reconnaissance vocale non supportée', 'error');
+      showToast("Reconnaissance vocale non supportée", "error");
       return;
     }
 
     const recognition = new SpeechRecognition();
-    recognition.lang = 'fr-FR';
+    recognition.lang = "fr-FR";
     recognition.interimResults = false;
     recognition.maxAlternatives = 1;
 
-    showMessage('Test du microphone... Dites quelque chose !', 'info');
-    
+    showToast("Test du microphone... Dites quelque chose !", "info");
+
     recognition.start();
-    
-    recognition.addEventListener('result', (event) => {
-      const transcript = event.results[0][0].transcript;
-      showMessage(`Microphone OK ! Vous avez dit: "${transcript}"`, 'success');
+
+    recognition.addEventListener("result", (event) => {
+      const transcript = event.results[0][0].transcript
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;");
+      showToast(`Microphone OK ! Vous avez dit: "${transcript}"`, "success");
       addActivityLog(`Test microphone: "${transcript}"`);
     });
-    
-    recognition.addEventListener('error', () => {
-      showMessage('Erreur microphone ou autorisation refusée', 'error');
+
+    recognition.addEventListener("error", () => {
+      showToast("Erreur microphone ou autorisation refusée", "error");
     });
   }
 
-  // Add activity log entry
   function addActivityLog(message) {
-    const activityDiv = document.getElementById('recent-activity');
-    const newActivity = document.createElement('div');
-    newActivity.className = 'stat-item';
+    const activityDiv = document.getElementById("recent-activity");
+    const newActivity = document.createElement("div");
+    newActivity.className = "stat-item";
     newActivity.innerHTML = `
-      <span class="stat-label">${message}</span>
-      <span class="stat-value">${new Date().toLocaleTimeString('fr-FR')}</span>
+      <span class="stat-label">${message
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")}</span>
+      <span class="stat-value">${new Date().toLocaleTimeString("fr-FR")}</span>
     `;
-    
-    // Insert at the beginning (after the system started item)
+
     if (activityDiv.children.length > 1) {
       activityDiv.insertBefore(newActivity, activityDiv.children[1]);
     } else {
       activityDiv.appendChild(newActivity);
     }
-    
-    // Keep only last 5 activities
+
     while (activityDiv.children.length > 6) {
       activityDiv.removeChild(activityDiv.lastChild);
     }
-    
-    // Update commands count
+
     activityCount++;
-    document.getElementById('commands-today').textContent = activityCount;
-    document.getElementById('last-command').textContent = message;
+    document.getElementById("commands-today").textContent = activityCount;
+    document.getElementById("last-command").textContent = message
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;");
   }
 
-  // Refresh devices status
   function refreshDevices() {
-    showMessage('Actualisation des appareils...', 'info');
-    
-    // Simulate device refresh
-    setTimeout(() => {
-      showMessage('Appareils actualisés avec succès', 'success');
-      addActivityLog('Actualisation des appareils');
-    }, 1000);
-  }
-
-  // Show MQTT logs
-  function showMqttLogs() {
-    showMessage('Chargement des logs MQTT...', 'info');
-    addActivityLog('Consultation logs MQTT');
-  }
-
-  // Clear activity log
-  function clearActivityLog() {
-    const activityDiv = document.getElementById('recent-activity');
-    // Keep only the startup entry
-    const startupEntry = activityDiv.children[0];
-    activityDiv.innerHTML = '';
-    activityDiv.appendChild(startupEntry);
-    
-    showMessage('Logs d\'activité vidés', 'success');
-    activityCount = 0;
-    document.getElementById('commands-today').textContent = '0';
-    document.getElementById('last-command').textContent = 'Aucune';
-  }
-
-  // Export logs
-  function exportLogs() {
-    showMessage('Exportation des logs...', 'info');
-    addActivityLog('Export des logs système');
-  }
-
-  // Admin functions
-  function manageVoiceCommands() {
-    showMessage('Redirection vers la gestion des commandes...', 'info');
-    addActivityLog('Gestion commandes vocales');
-    // Could redirect to a custom admin page
-  }
-
-  function viewSystemLogs() {
-    showMessage('Chargement des logs système...', 'info');
-    addActivityLog('Consultation logs système');
-  }
-
-  // Check system status periodically
-  function checkSystemStatus() {
-    // Simulate MQTT status check
-    fetch('/pending/')
-      .then(response => response.json())
-      .then(data => {
-        const mqttStatus = document.getElementById('mqtt-status');
-        if (data.message !== 'no_command') {
-          mqttStatus.textContent = 'Actif';
-          mqttStatus.className = 'status-badge status-online';
-        }
+    showToast("Actualisation des appareils...", "info");
+    fetch("/api/devices/", {
+      headers: {
+        "X-CSRFToken": getCookie("csrftoken"),
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        const deviceGrid = document.querySelector(".device-grid");
+        deviceGrid.innerHTML = data.devices
+          .map(
+            (device) => `
+          <div class="device-item">
+            <div class="device-icon" aria-hidden="true">${device.icon.replace(
+              /</g,
+              "&lt;"
+            )}</div>
+            <div class="device-details">
+              <div class="device-name">${device.name.replace(
+                /</g,
+                "&lt;"
+              )}</div>
+              <div class="device-status">${device.status.replace(
+                /</g,
+                "&lt;"
+              )}</div>
+            </div>
+          </div>
+        `
+          )
+          .join("");
+        showToast("Appareils actualisés avec succès", "success");
+        addActivityLog("Actualisation des appareils");
       })
-      .catch(() => {
-        const mqttStatus = document.getElementById('mqtt-status');
-        mqttStatus.textContent = 'Déconnecté';
-        mqttStatus.className = 'status-badge status-offline';
+      .catch((error) => {
+        showToast("Erreur lors de l'actualisation des appareils", "error");
+        console.error("Device refresh error:", error);
       });
   }
 
-  // Initialize dashboard
+  function clearActivityLog() {
+    confirmModal("Voulez-vous vider les logs d'activité ?", () => {
+      const activityDiv = document.getElementById("recent-activity");
+      const startupEntry = activityDiv.children[0];
+      activityDiv.innerHTML = "";
+      activityDiv.appendChild(startupEntry);
+      showToast("Logs d'activité vidés", "success");
+      activityCount = 0;
+      document.getElementById("commands-today").textContent = "0";
+      document.getElementById("last-command").textContent = "Aucune";
+    });
+  }
+
+  function exportLogs() {
+    showToast("Exportation des logs...", "info");
+    fetch("/api/logs/export/", {
+      headers: {
+        "X-CSRFToken": getCookie("csrftoken"),
+      },
+    })
+      .then((response) => response.blob())
+      .then((blob) => {
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "logs.json";
+        a.click();
+        window.URL.revokeObjectURL(url);
+        showToast("Logs exportés avec succès", "success");
+        addActivityLog("Export des logs système");
+      })
+      .catch((error) => {
+        showToast("Erreur lors de l'exportation des logs", "error");
+        console.error("Log export error:", error);
+      });
+  }
+
+  function manageVoiceCommands() {
+    showFormModal({
+      title: "Gérer les commandes vocales",
+      fields: [
+        {
+          name: "command",
+          label: "Nouvelle commande",
+          type: "text",
+          placeholder: "Entrez la commande",
+        },
+        {
+          name: "action",
+          label: "Action",
+          type: "select",
+          options: ["Ouvrir porte", "Allumer lumière", "Activer sécurité"],
+        },
+      ],
+      submitText: "Ajouter",
+      onSubmit: async (data) => {
+        await fetch("/api/voice-commands/add/", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": getCookie("csrftoken"),
+          },
+          body: JSON.stringify(data),
+        });
+        showToast("Commande vocale ajoutée", "success");
+        addActivityLog("Ajout commande vocale");
+      },
+    });
+  }
+
+  function viewSystemLogs() {
+    showToast("Chargement des logs système...", "info");
+    addActivityLog("Consultation logs système");
+    // Implement actual log viewing, e.g., redirect to a logs page
+    window.location.href = "/logs/";
+  }
+
+  function checkSystemStatus() {
+    fetch("/pending/")
+      .then((response) => response.json())
+      .then((data) => {
+        const mqttStatus = document.getElementById("mqtt-status");
+        if (data.message !== "no_command") {
+          mqttStatus.textContent = "Actif";
+          mqttStatus.className = "status-badge status-online";
+        }
+      })
+      .catch(() => {
+        const mqttStatus = document.getElementById("mqtt-status");
+        mqttStatus.textContent = "Déconnecté";
+        mqttStatus.className = "status-badge status-offline";
+      });
+  }
+
   function initDashboard() {
     updateTime();
     checkSpeechRecognition();
-    
-    // Set startup time
-    document.getElementById('startup-time').textContent = new Date().toLocaleTimeString('fr-FR');
-    
-    // Update time every minute
+    document.getElementById("startup-time").textContent =
+      new Date().toLocaleTimeString("fr-FR");
+    connectMqttLogWebSocket();
     setInterval(updateTime, 60000);
-    
-    // Check system status every 30 seconds
     setInterval(checkSystemStatus, 30000);
-    
-    // Initial status check
     checkSystemStatus();
   }
 
-  // Start dashboard when page loads
-  document.addEventListener('DOMContentLoaded', initDashboard);
+  document.addEventListener("DOMContentLoaded", initDashboard);
+</script>
 {% endblock %}

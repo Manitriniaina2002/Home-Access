@@ -25,12 +25,13 @@ SECRET_KEY = 'django-insecure-5fh3@z8jo8++&9@(a#dvdjn^--4mq&8!q8yziw%64wmp6l%glx
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
 
 INSTALLED_APPS = [
+    'channels',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -43,6 +44,8 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    # Serve static files in ASGI/Daphne using WhiteNoise
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -68,7 +71,17 @@ TEMPLATES = [
     },
 ]
 
+
+# Channels/ASGI
+ASGI_APPLICATION = 'home_acces.asgi.application'
 WSGI_APPLICATION = 'home_acces.wsgi.application'
+
+# In-memory channel layer for dev (use channels_redis in prod)
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels.layers.InMemoryChannelLayer',
+    },
+}
 
 
 # Database
@@ -119,6 +132,12 @@ USE_TZ = True
 STATIC_URL = 'static/'
 # Serve project-level static files during development (e.g. static/js/...)
 STATICFILES_DIRS = [BASE_DIR / 'static']
+# Directory for collectstatic (in case you run collectstatic)
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+
+# WhiteNoise settings
+WHITENOISE_AUTOREFRESH = True
+WHITENOISE_MAX_AGE = 0
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field

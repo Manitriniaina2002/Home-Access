@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import VoiceCommand, AccessLog, DoorPin
+from .models import VoiceCommand, AccessLog, DoorPin, DoorEvent
 
 
 @admin.register(VoiceCommand)
@@ -20,3 +20,9 @@ class DoorPinAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'active', 'created_at')
     list_filter = ('active',)
     readonly_fields = ('hashed_pin', 'created_at')
+
+
+@admin.register(DoorEvent)
+class DoorEventAdmin(admin.ModelAdmin):
+    list_display = ('id', 'topic', 'status', 'timestamp')
+    ordering = ('-timestamp',)

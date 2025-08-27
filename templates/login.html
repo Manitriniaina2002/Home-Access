@@ -5,6 +5,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Connexion - Portail d'accès</title>
     <style>
+        :root {
+            --primary-50: #f0f9ff;
+            --primary-100: #e0f2fe;
+            --primary-500: #0ea5e9;
+            --primary-600: #0284c7;
+            --primary-700: #0369a1;
+            --neutral-50: #f8fafc;
+            --neutral-100: #f1f5f9;
+            --neutral-200: #e2e8f0;
+            --neutral-400: #94a3b8;
+            --neutral-500: #64748b;
+            --neutral-600: #475569;
+            --neutral-700: #334155;
+            --neutral-800: #1e293b;
+            --neutral-900: #0f172a;
+            --success-500: #10b981;
+            --error-500: #ef4444;
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -12,385 +31,623 @@
         }
 
         body {
-            font-family: 'Arial', sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 20px;
-            color: white;
-            overflow-x: hidden;
-        }
-
-        .floating-particles {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            padding: 1rem;
+            position: relative;
             overflow: hidden;
-            pointer-events: none;
-            z-index: -1;
         }
 
-        .particle {
+        /* Animated Background Elements */
+        .bg-decoration {
             position: absolute;
-            background: rgba(255, 255, 255, 0.1);
+            pointer-events: none;
+        }
+
+        .bg-circle {
             border-radius: 50%;
-            animation: float 6s infinite linear;
+            background: rgba(255, 255, 255, 0.1);
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .bg-circle:nth-child(1) {
+            width: 300px;
+            height: 300px;
+            top: -150px;
+            left: -150px;
+            animation-delay: 0s;
+        }
+
+        .bg-circle:nth-child(2) {
+            width: 200px;
+            height: 200px;
+            bottom: -100px;
+            right: -100px;
+            animation-delay: 2s;
+        }
+
+        .bg-circle:nth-child(3) {
+            width: 150px;
+            height: 150px;
+            top: 20%;
+            right: 10%;
+            animation-delay: 4s;
         }
 
         @keyframes float {
-            0% {
-                transform: translateY(100vh) rotate(0deg);
-                opacity: 0;
-            }
-            10% {
-                opacity: 1;
-            }
-            90% {
-                opacity: 1;
-            }
-            100% {
-                transform: translateY(-100px) rotate(360deg);
-                opacity: 0;
-            }
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(180deg); }
         }
 
+        /* Grid Pattern Overlay */
+        .grid-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+            background-size: 50px 50px;
+            animation: grid-move 20s linear infinite;
+        }
+
+        @keyframes grid-move {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(50px, 50px); }
+        }
+
+        /* Main Login Container */
         .login-container {
-            background: rgba(255, 255, 255, 0.15);
-            backdrop-filter: blur(15px);
-            border-radius: 20px;
-            padding: 3rem 2rem;
-            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
-            max-width: 500px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 2rem;
+            padding: 3rem 2.5rem;
+            box-shadow: 
+                0 25px 50px -12px rgba(0, 0, 0, 0.25),
+                0 0 0 1px rgba(255, 255, 255, 0.1);
+            max-width: 480px;
             width: 100%;
-            text-align: center;
-            color: #111827;
             position: relative;
-            transform: translateY(-8px);
+            z-index: 10;
+            transform: translateY(0);
+            animation: slideUp 0.8s ease-out;
         }
 
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Header Section */
         .login-header {
-            margin-bottom: 2rem;
+            text-align: center;
+            margin-bottom: 2.5rem;
         }
 
-        .security-badge {
-            background: linear-gradient(90deg, #667eea, #764ba2);
-            border-radius: 20px;
-            padding: 0.5rem 1rem;
-            font-size: 0.9rem;
-            font-weight: 600;
+        .brand-logo {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, var(--primary-500), var(--primary-700));
+            border-radius: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
             color: white;
-            margin-bottom: 1rem;
+            font-size: 2rem;
+            font-weight: 700;
+            box-shadow: 0 10px 25px rgba(14, 165, 233, 0.3);
+            position: relative;
         }
 
-        .logo {
-            font-size: 2.5rem;
-            margin-bottom: 0.5rem;
-            font-weight: 800;
-            color: #4c2fb0;
-            background: linear-gradient(90deg, #667eea, #764ba2);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
+        .brand-logo::after {
+            content: '';
+            position: absolute;
+            inset: -2px;
+            background: linear-gradient(135deg, var(--primary-500), var(--primary-700));
+            border-radius: 1.5rem;
+            z-index: -1;
+            opacity: 0.5;
+            filter: blur(10px);
         }
 
         .login-title {
-            font-size: 1.8rem;
+            font-size: 2rem;
             font-weight: 700;
-            color: #111827;
+            color: var(--neutral-900);
             margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, var(--neutral-900), var(--neutral-700));
+            -webkit-background-clip: text;
+            background-clip: text;
         }
 
         .login-subtitle {
-            color: #6b7280;
+            color: var(--neutral-600);
             font-size: 1rem;
-            line-height: 1.4;
+            line-height: 1.5;
             margin-bottom: 1rem;
+        }
+
+        .security-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success-500);
+            border: 1px solid rgba(16, 185, 129, 0.2);
+            border-radius: 2rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        /* Form Styles */
+        .login-form {
+            margin-bottom: 2rem;
         }
 
         .form-group {
             margin-bottom: 1.5rem;
-            text-align: left;
         }
 
         .form-label {
             display: block;
             font-weight: 600;
-            color: #374151;
+            color: var(--neutral-700);
             margin-bottom: 0.5rem;
-            font-size: 0.95rem;
+            font-size: 0.875rem;
         }
 
-        .input-modern {
+        .form-input {
             width: 100%;
-            padding: 0.75rem 1rem;
-            background: rgba(255, 255, 255, 0.9);
-            border: 1px solid #e6eefb;
-            border-radius: 10px;
+            padding: 1rem 1.25rem;
+            background: var(--neutral-50);
+            border: 2px solid var(--neutral-200);
+            border-radius: 1rem;
             font-size: 1rem;
-            color: #0f172a;
-            transition: box-shadow 0.2s ease, border-color 0.2s ease;
+            color: var(--neutral-900);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+        }
+
+        .form-input:focus {
             outline: none;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            border-color: var(--primary-500);
+            background: white;
+            box-shadow: 0 0 0 4px rgba(14, 165, 233, 0.1);
+            transform: translateY(-1px);
         }
 
-        .input-modern:focus {
-            background: #fff;
-            border-color: rgba(102, 126, 234, 0.9);
-            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
+        .form-input:hover {
+            border-color: var(--neutral-300);
         }
 
-        .input-modern::placeholder {
-            color: #94a3b8;
+        .form-input::placeholder {
+            color: var(--neutral-400);
         }
 
+        /* Enhanced Button */
         .login-btn {
             width: 100%;
-            padding: 0.95rem;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            border-radius: 10px;
+            padding: 1rem 1.5rem;
+            background: linear-gradient(135deg, var(--primary-500), var(--primary-600));
+            border: none;
+            border-radius: 1rem;
             color: white;
             font-size: 1rem;
-            font-weight: 700;
+            font-weight: 600;
             cursor: pointer;
-            transition: box-shadow 0.2s ease, transform 0.2s ease;
-            margin-top: 1.25rem;
-            border: none;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(14, 165, 233, 0.3);
+        }
+
+        .login-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .login-btn:hover::before {
+            left: 100%;
         }
 
         .login-btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 14px 30px rgba(102, 126, 234, 0.3);
+            box-shadow: 0 8px 25px rgba(14, 165, 233, 0.4);
         }
 
+        .login-btn:active {
+            transform: translateY(0);
+        }
+
+        .login-btn.loading {
+            pointer-events: none;
+        }
+
+        .login-btn.loading::after {
+            content: '';
+            width: 20px;
+            height: 20px;
+            border: 2px solid transparent;
+            border-top: 2px solid white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        @keyframes spin {
+            to { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+
+        /* Error Message */
         .error-message {
-            background: #fff1f2;
-            border: 1px solid #fecaca;
-            color: #991b1b;
-            padding: 0.75rem 1rem;
-            border-radius: 8px;
-            font-size: 0.9rem;
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            color: #dc2626;
+            padding: 1rem;
+            border-radius: 0.75rem;
+            font-size: 0.875rem;
             margin-top: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .error-message::before {
+            content: '⚠';
+            font-size: 1.25rem;
+            flex-shrink: 0;
+        }
+
+        /* Footer Info */
+        .login-footer {
+            border-top: 1px solid var(--neutral-200);
+            padding-top: 1.5rem;
             text-align: center;
         }
 
-        .system-info {
-            margin-top: 2rem;
-            padding-top: 2rem;
-            border-top: 1px solid rgba(255, 255, 255, 0.2);
-            font-size: 0.85rem;
-            color: rgba(255, 255, 255, 0.7);
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin-bottom: 1.5rem;
         }
 
-        .feature-list {
-            list-style: none;
-            margin: 1rem 0;
-        }
-
-        .feature-list li {
-            margin: 0.5rem 0;
+        .feature-item {
             display: flex;
+            flex-direction: column;
             align-items: center;
-            gap: 0.5rem;
+            padding: 1rem;
+            background: var(--neutral-50);
+            border-radius: 0.75rem;
+            border: 1px solid var(--neutral-200);
         }
 
         .feature-icon {
-            width: 16px;
-            height: 16px;
-            background: rgba(16, 185, 129, 0.3);
-            border-radius: 50%;
+            width: 2.5rem;
+            height: 2.5rem;
+            background: linear-gradient(135deg, var(--primary-100), var(--primary-50));
+            border-radius: 0.75rem;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 0.7rem;
+            font-size: 1.25rem;
+            margin-bottom: 0.5rem;
         }
 
-        .demo-credentials {
-            background: rgba(102, 126, 234, 0.08);
-            border: 1px solid rgba(118, 75, 162, 0.08);
-            backdrop-filter: blur(6px);
-            border-radius: 10px;
-            padding: 0.85rem;
-            margin-top: 1rem;
-            font-size: 0.85rem;
-            color: #374151;
+        .feature-text {
+            font-size: 0.75rem;
+            color: var(--neutral-600);
+            font-weight: 500;
+            text-align: center;
+        }
+
+        .help-text {
+            font-size: 0.875rem;
+            color: var(--neutral-500);
+            margin-bottom: 1rem;
+        }
+
+        .help-link {
+            color: var(--primary-600);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .help-link:hover {
+            text-decoration: underline;
         }
 
         /* Responsive Design */
-        @media (max-width: 480px) {
+        @media (max-width: 640px) {
             .login-container {
                 padding: 2rem 1.5rem;
                 margin: 1rem;
-                border-radius: 20px;
+                border-radius: 1.5rem;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr;
+                gap: 0.75rem;
+            }
+
+            .feature-item {
+                flex-direction: row;
+                text-align: left;
+                padding: 0.75rem;
+            }
+
+            .feature-icon {
+                margin-bottom: 0;
+                margin-right: 0.75rem;
+                width: 2rem;
+                height: 2rem;
+                font-size: 1rem;
+            }
+
+            .brand-logo {
+                width: 60px;
+                height: 60px;
+                font-size: 1.5rem;
             }
 
             .login-title {
                 font-size: 1.75rem;
             }
+        }
 
-            .logo {
-                font-size: 3rem;
-            }
-
-            .input-modern {
-                font-size: 16px; /* Prevent zoom on iOS */
-                padding: 1rem;
+        /* Accessibility Enhancements */
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
             }
         }
 
-        @media (max-width: 374px) {
-            .login-container {
-                padding: 1.5rem 1rem;
-            }
-
-            .login-title {
-                font-size: 1.5rem;
-            }
+        /* Focus Visible */
+        .login-btn:focus-visible,
+        .form-input:focus-visible {
+            outline: 2px solid var(--primary-500);
+            outline-offset: 2px;
         }
     </style>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <!-- Floating Particles -->
-    <div class="floating-particles">
-        <div class="particle" style="left: 10%; animation-delay: 0s; width: 4px; height: 4px"></div>
-        <div class="particle" style="left: 20%; animation-delay: 1s; width: 6px; height: 6px"></div>
-        <div class="particle" style="left: 30%; animation-delay: 2s; width: 3px; height: 3px"></div>
-        <div class="particle" style="left: 40%; animation-delay: 3s; width: 5px; height: 5px"></div>
-        <div class="particle" style="left: 50%; animation-delay: 4s; width: 4px; height: 4px"></div>
-        <div class="particle" style="left: 60%; animation-delay: 5s; width: 6px; height: 6px"></div>
-        <div class="particle" style="left: 70%; animation-delay: 0.5s; width: 3px; height: 3px"></div>
-        <div class="particle" style="left: 80%; animation-delay: 1.5s; width: 5px; height: 5px"></div>
-        <div class="particle" style="left: 90%; animation-delay: 2.5s; width: 4px; height: 4px"></div>
-    </div>
+    <!-- Animated Background -->
+    <div class="grid-overlay"></div>
+    <div class="bg-decoration bg-circle"></div>
+    <div class="bg-decoration bg-circle"></div>
+    <div class="bg-decoration bg-circle"></div>
 
+    <!-- Main Login Container -->
     <main class="login-container" role="main">
+        <!-- Header -->
         <header class="login-header">
-            <div class="security-badge" aria-label="Accès Sécurisé">
+            <div class="brand-logo" aria-label="Logo de l'application">P</div>
+            <div class="security-badge">
                 <svg width="16" height="16" fill="currentColor" viewBox="0 0 20 20">
-                    <path fill-rule="evenodd" d="M10 1L5 4v6c0 5.55 3.84 9.74 9 9.74s9-4.19 9-9.74V4l-5-3z" clip-rule="evenodd" />
+                    <path fill-rule="evenodd" d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
                 </svg>
                 Accès Sécurisé
             </div>
-            <div class="logo">Portail</div>
             <h1 class="login-title">Connexion</h1>
-            <p class="login-subtitle">Accédez à votre espace sécurisé en entrant vos identifiants.</p>
+            <p class="login-subtitle">
+                Accédez à votre tableau de bord sécurisé pour contrôler vos appareils connectés.
+            </p>
         </header>
 
-        <form method="post" action="/login/" id="login-form" aria-labelledby="login-title">
+        <!-- Login Form -->
+        <form method="post" action="/login/" class="login-form" id="login-form" novalidate>
             {% csrf_token %}
+            
             <div class="form-group">
                 <label class="form-label" for="username">Nom d'utilisateur</label>
-                <input type="text" id="username" name="username" class="input-modern" placeholder="Entrez votre nom d'utilisateur" required autocomplete="username" aria-label="Nom d'utilisateur" />
+                <input 
+                    type="text" 
+                    id="username" 
+                    name="username" 
+                    class="form-input" 
+                    placeholder="Entrez votre nom d'utilisateur"
+                    required 
+                    autocomplete="username"
+                    autocapitalize="none"
+                    spellcheck="false"
+                />
             </div>
 
             <div class="form-group">
                 <label class="form-label" for="password">Mot de passe</label>
-                <input type="password" id="password" name="password" class="input-modern" placeholder="Entrez votre mot de passe" required autocomplete="current-password" aria-label="Mot de passe" />
+                <input 
+                    type="password" 
+                    id="password" 
+                    name="password" 
+                    class="form-input" 
+                    placeholder="Entrez votre mot de passe"
+                    required 
+                    autocomplete="current-password"
+                />
             </div>
 
-            <button type="submit" class="login-btn" id="login-button" aria-label="Se connecter">
-                Se connecter
+            <button type="submit" class="login-btn" id="login-button">
+                <span id="button-text">Se connecter</span>
             </button>
 
             {% if error %}
-            <div id="error-message" class="error-message">{{ error }}</div>
-            {% else %}
-            <div id="error-message" class="error-message" style="display: none">Identifiants invalides</div>
+            <div class="error-message" role="alert">
+                {{ error }}
+            </div>
             {% endif %}
+            
+            <div id="dynamic-error" class="error-message" style="display: none;" role="alert">
+                Veuillez remplir tous les champs
+            </div>
         </form>
 
-        <div class="system-info">
-            <strong>Fonctionnalités:</strong>
-            <ul class="feature-list">
-                <li><span class="feature-icon">✓</span> Contrôle des accès</li>
-                <li><span class="feature-icon">✓</span> Gestion des appareils</li>
-                <li><span class="feature-icon">✓</span> Console d'administration</li>
-            </ul>
-            <div class="demo-credentials">
-                <strong>Remarque:</strong><br />
-                Contactez l'administrateur pour créer un compte.
+        <!-- Footer -->
+        <footer class="login-footer">
+            <div class="features-grid">
+                <div class="feature-item">
+                    <div class="feature-icon">🚪</div>
+                    <div class="feature-text">Contrôle d'accès</div>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">🎤</div>
+                    <div class="feature-text">Commandes vocales</div>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">📱</div>
+                    <div class="feature-text">Interface moderne</div>
+                </div>
             </div>
-        </div>
+            
+            <div class="help-text">
+                Besoin d'aide ? <a href="#" class="help-link">Contactez l'administrateur</a>
+            </div>
+        </footer>
     </main>
 
     <script>
-        // Enhanced form handling
-        document.getElementById("login-form").addEventListener("submit", function (e) {
-            const button = document.getElementById("login-button");
-            const errorDiv = document.getElementById("error-message");
+        // Enhanced form validation and UX
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('login-form');
+            const button = document.getElementById('login-button');
+            const buttonText = document.getElementById('button-text');
+            const usernameInput = document.getElementById('username');
+            const passwordInput = document.getElementById('password');
+            const dynamicError = document.getElementById('dynamic-error');
 
-            // Add loading state
-            button.classList.add("loading");
-            button.textContent = "";
-
-            // Hide previous errors
-            errorDiv.style.display = "none";
-
-            // In a real Django app, form would submit normally
-            // This is just for demonstration
-            setTimeout(() => {
-                button.classList.remove("loading");
-                button.textContent = "Se connecter";
-
-                // Simulate error for demo
-                const username = document.getElementById("username").value;
-                const password = document.getElementById("password").value;
-
-                if (!username || !password) {
-                    errorDiv.textContent = "Veuillez remplir tous les champs";
-                    errorDiv.style.display = "block";
-                    e.preventDefault();
+            // Real-time validation feedback
+            function validateField(input) {
+                if (input.value.trim() === '') {
+                    input.style.borderColor = 'var(--error-500)';
+                    input.style.background = 'rgba(239, 68, 68, 0.05)';
+                    return false;
+                } else {
+                    input.style.borderColor = 'var(--success-500)';
+                    input.style.background = 'rgba(16, 185, 129, 0.05)';
+                    return true;
                 }
-            }, 1500);
-        });
+            }
 
-        // Enhanced input focus effects
-        document.querySelectorAll(".input-modern").forEach((input) => {
-            input.addEventListener("focus", function () {
-                this.parentNode.querySelector(".form-label").style.color = "rgba(255, 255, 255, 1)";
+            // Reset field styles
+            function resetField(input) {
+                input.style.borderColor = '';
+                input.style.background = '';
+            }
+
+            // Input event listeners for real-time feedback
+            [usernameInput, passwordInput].forEach(input => {
+                input.addEventListener('input', () => resetField(input));
+                input.addEventListener('blur', () => validateField(input));
             });
 
-            input.addEventListener("blur", function () {
-                this.parentNode.querySelector(".form-label").style.color = "rgba(255, 255, 255, 0.9)";
+            // Form submission handler
+            form.addEventListener('submit', function(e) {
+                dynamicError.style.display = 'none';
+                
+                const isUsernameValid = validateField(usernameInput);
+                const isPasswordValid = validateField(passwordInput);
+
+                if (!isUsernameValid || !isPasswordValid) {
+                    e.preventDefault();
+                    dynamicError.textContent = 'Veuillez remplir tous les champs correctement';
+                    dynamicError.style.display = 'block';
+                    
+                    // Focus first invalid field
+                    const firstInvalid = !isUsernameValid ? usernameInput : passwordInput;
+                    firstInvalid.focus();
+                    return;
+                }
+
+                // Show loading state
+                button.classList.add('loading');
+                button.disabled = true;
+                buttonText.style.opacity = '0';
+
+                // Simulate loading for demo (remove in production)
+                setTimeout(() => {
+                    button.classList.remove('loading');
+                    button.disabled = false;
+                    buttonText.style.opacity = '1';
+                }, 1500);
             });
-        });
 
-        // Add subtle parallax effect to particles on mouse move
-        document.addEventListener("mousemove", function (e) {
-            const particles = document.querySelectorAll(".particle");
-            const x = e.clientX / window.innerWidth;
-            const y = e.clientY / window.innerHeight;
-
-            particles.forEach((particle, index) => {
-                const speed = (index + 1) * 0.5;
-                const translateX = (x - 0.5) * speed;
-                const translateY = (y - 0.5) * speed;
-
-                particle.style.transform += ` translate(${translateX}px, ${translateY}px)`;
+            // Enhanced keyboard navigation
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Tab') {
+                    document.body.style.setProperty('--focus-visible', 'block');
+                }
             });
+
+            document.addEventListener('mousedown', function() {
+                document.body.style.setProperty('--focus-visible', 'none');
+            });
+
+            // Auto-focus username field
+            usernameInput.focus();
+
+            // Add smooth transitions for better UX
+            const inputs = document.querySelectorAll('.form-input');
+            inputs.forEach(input => {
+                input.addEventListener('focus', function() {
+                    this.parentNode.style.transform = 'translateY(-2px)';
+                });
+                
+                input.addEventListener('blur', function() {
+                    this.parentNode.style.transform = '';
+                });
+            });
+
+            // Prevent form resubmission on page reload
+            if (window.history.replaceState) {
+                window.history.replaceState(null, null, window.location.href);
+            }
         });
 
-        // Announce to screen readers when page loads
-        window.addEventListener("load", function () {
-            const announcement = document.createElement("div");
-            announcement.setAttribute("aria-live", "polite");
-            announcement.setAttribute("aria-atomic", "true");
-            announcement.style.position = "absolute";
-            announcement.style.left = "-10000px";
-            announcement.style.width = "1px";
-            announcement.style.height = "1px";
-            announcement.style.overflow = "hidden";
-            announcement.textContent = "Page de connexion Smart Home Control chargée. Saisissez vos identifiants pour accéder au système.";
+        // Service Worker registration for offline support (optional)
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function() {
+                navigator.serviceWorker.register('/sw.js').catch(() => {
+                    // Service worker registration failed, but app still works
+                });
+            });
+        }
 
-            document.body.appendChild(announcement);
-
-            setTimeout(() => {
-                document.body.removeChild(announcement);
-            }, 2000);
-        });
+        // Performance optimization: preload critical resources
+        const linkPreload = document.createElement('link');
+        linkPreload.rel = 'preload';
+        linkPreload.href = '/static/css/dashboard.css';
+        linkPreload.as = 'style';
+        document.head.appendChild(linkPreload);
     </script>
 </body>
 </html>
